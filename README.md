@@ -1,5 +1,7 @@
 # AutoPK
-Try to draw the elo-playouts curve of those leelazero networks.这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)，以ELFV0为基础，使用逐步增长的playouts自动对战，根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
+    Try to draw the elo-playouts curve of those leelazero networks.
+    这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)
+    以ELFV0为基础，使用逐步增长的playouts自动对战，根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
 
 # Advantage
     自动保存对战棋谱，并且保存每一步的胜率情况
