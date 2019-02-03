@@ -1,19 +1,24 @@
 # AutoPK
-Try to draw the elo-playouts curve of those leelazero networks
-这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)，以ELFV0为基础，
-使用逐步增长的playouts自动对战，根据胜率计算出对应playouts的elo值，进一
-步画出棋力曲线来。
+Try to draw the elo-playouts curve of those leelazero networks.这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)，以ELFV0为基础，使用逐步增长的playouts自动对战，根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
 
-本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
+# Advantage
+    自动保存对战棋谱，并且保存每一步的胜率情况
+    参数调整自由，引擎也可以自由调整
+    会python编程的话，还可以变形出各种测试花样来
+
+# To do list
+    图形配置界面，动态显示下棋对战进展
+    对战断点保存以及恢复
+
+# Requirements
+    本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
 
 # How to use
-修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的
-另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），
-会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
+    修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
 
-同playouts的对战程序为：goEngin-SamePoPK.py
+    同playouts的对战程序为：goEngin-SamePoPK.py
 
-同时间的对战程序为：goEngin-SameTimePK.py
+    同时间的对战程序为：goEngin-SameTimePK.py
 
 参见“#”注释的可修改部分说明：
 
