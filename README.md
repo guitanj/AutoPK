@@ -12,6 +12,9 @@
 # To do list
     图形配置界面，动态显示下棋对战进展
     对战断点保存以及恢复
+    
+# Curves
+![Screen-shot of elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/Curves.jpg "Screen-shot of elo-playouts Curves")
 
 # Requirements
     本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
