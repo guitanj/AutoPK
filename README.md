@@ -17,7 +17,9 @@
     本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
 
 # How to use
-    修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
+    修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的
+    另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），
+    会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
     生成的对战结果会自动保存在PKResult.txt文件中
 
     同playouts的对战程序为：goEngin-SamePoPK.py
