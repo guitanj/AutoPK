@@ -12,37 +12,67 @@ Try to draw the elo-playouts curve of those leelazero networks
 会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
 
 同playouts的对战程序为：goEngin-SamePoPK.py
+
 同时间的对战程序为：goEngin-SameTimePK.py
 
 参见“#”注释的可修改部分说明：
+
 if __name__ == "__main__":
+
     playoutb = 100 #可修改：执黑权重的初始po值
+    
     playoutw = 100 #可修改：执白权重的初始po值
+    
     weightb='200.gz' #可修改：执黑权重
+    
     weightw='ELFV0.gz' #可修改：执白权重
+    
     while playoutb <= 12800: #可修改：测试po的上限
+    
         t0 = datetime.datetime.now()
+        
         blackW = 0
+        
         whiteW = 0
+        
         for i in range(100): #可修改：第39盘中断了的话，可以改为，如：range(39,100)继续测试
+        
             whoWin = startPK(i,playoutb,playoutw,weightb,weightw)
+            
             if whoWin == 'b':
+            
                 blackW += 1
+                
             elif whoWin == 'w':
+            
                 whiteW += 1
+                
             elif whoWin == 'x':
+            
                 print 'Too many moves Found:', whoWin
+                
             else:
+            
                 print 'Error Found:', whoWin
+                
             print weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po', blackW,':', whiteW
+            
         t1 = datetime.datetime.now()
+        
         resfile = open('PKResult.txt','a')
+        
         resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+        
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
+                      
                       '. Spend '+str((t1-t0).total_seconds())+'s\n')
+                      
         resfile.write(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po '+str(blackW)+":"+str(whiteW)+'\n')
-        #resfile.write(weightb+' B-t2 vs '+weightw+' W-t4 '+str(blackW)+":"+str(whiteW)+'\n')
+     
         resfile.close()
+        
         playoutb = playoutb *2 #可修改：执黑权重测试完毕100局后，下一轮100局的po值增加量
+        
         playoutw = playoutw *2 #可修改：一般改成和上一行一样
+        
         #引擎及引擎参数的修改要到201行和242行，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
