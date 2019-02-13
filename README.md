@@ -14,6 +14,7 @@
     对战断点保存以及恢复
     
 # Curves
+![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/playouts vs elo list.jpg "playouts vs elo list")
 ![Screen-shot of elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/Curves.jpg "Screen-shot of elo-playouts Curves")
 
 # Requirements
