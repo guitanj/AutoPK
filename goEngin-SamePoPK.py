@@ -196,6 +196,9 @@ def getStepInfo(infotxt):
 
 def startPK(num,playoutb,playoutw,weightb,weightw):
     g = sgf.Sgf_game(size=19)
+    g.root.set("KM",'7.5')
+    g.root.set("PB",weightb)
+    g.root.set("PW",weightw)
     
     #pbscmd = 'D:\\Go\\leela-zero-0.16-win64\\leelaz.exe -g --noponder -t 2 -wD:\\Go\\weights\\' \
     pbscmd = 'E:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder -t 1 -wE:\\Go\\Ana_1.26\\weight\\' \
@@ -364,6 +367,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
             node = g.extend_main_sequence()
             node.set_move('w', None)
             node.set("C", "White resigned!")
+            g.root.set('RE','B+')
             resigned = True
             whowins = 'b'
             endTime = datetime.datetime.now()
@@ -406,6 +410,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
             node = g.extend_main_sequence()
             node.set_move('b', None)
             node.set("C", "Black resigned!")
+            g.root.set('RE','W+')
             resigned = True
             whowins = 'w'
             endTime = datetime.datetime.now()
