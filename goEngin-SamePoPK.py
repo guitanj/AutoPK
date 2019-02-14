@@ -444,7 +444,10 @@ if __name__ == "__main__":
         blackW = 0
         whiteW = 0
         for i in range(100): #可修改：第39盘中断了的话，可以改为，如：range(39,100)继续测试
-            whoWin = startPK(i,playoutb,playoutw,weightb,weightw)
+            try:
+                whoWin = startPK(i,playoutb,playoutw,weightb,weightw)
+            except KeyboardInterrupt: #按下Ctrl+c中断保存信息后退出
+                break
             if whoWin == 'b':
                 blackW += 1
             elif whoWin == 'w':
