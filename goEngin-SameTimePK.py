@@ -460,7 +460,10 @@ if __name__ == "__main__":
         blackW = 0
         whiteW = 0
         for i in range(100): #可修改：每一轮测试的对局数
-            whoWin = startPK(i,weightb,weightw,spendTime)
+            try:
+                whoWin = startPK(i,weightb,weightw,spendTime)
+            except KeyboardInterrupt:
+                break
             if whoWin == 'b':
                 blackW += 1
             elif whoWin == 'w':
