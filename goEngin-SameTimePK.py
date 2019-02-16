@@ -473,6 +473,16 @@ if __name__ == "__main__":
             else:
                 print 'Error Found:', whoWin
             print weightb+' B vs '+weightw+' W'+str(spendTime)+'s', blackW,':', whiteW
+            
+            #每一局结束保存临时结果到~autopk_temp.txt文件中,防止意外退出
+            t1 = datetime.datetime.now()
+            tempfile = open('~autopk_temp.txt','w')
+            tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+                          t1.strftime('%b-%d-%y %H:%M:%S')+ \
+                          '. Spend '+str((t1-t0).total_seconds())+'s\n')
+            tempfile.write(weightb+' B-t1b1 vs '+weightw+' W-t2b8'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+            tempfile.close()
+            
         t1 = datetime.datetime.now()
         resfile = open('PKResult.txt','a')
         resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
