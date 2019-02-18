@@ -471,9 +471,9 @@ if __name__ == "__main__":
             t1 = datetime.datetime.now()
             tempfile = open('~autopk_temp.txt','w')
             tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
-                          t1.strftime('%b-%d-%y %H:%M:%S')+ \
-                          '. Spend '+str((t1-t0).total_seconds())+'s\n')
-            tempfile.write(weightb+' B-t1b1 vs '+weightw+' W-t2b8'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+                      t1.strftime('%b-%d-%y %H:%M:%S')+ \
+                      '. Spend '+str((t1-t0).total_seconds())+'s\n')
+            tempfile.write(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po '+str(blackW)+":"+str(whiteW)+'\n')
             tempfile.close()
 
         t1 = datetime.datetime.now()
