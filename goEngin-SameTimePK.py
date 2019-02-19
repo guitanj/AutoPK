@@ -480,7 +480,7 @@ if __name__ == "__main__":
             tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                           t1.strftime('%b-%d-%y %H:%M:%S')+ \
                           '. Spend '+str((t1-t0).total_seconds())+'s\n')
-            tempfile.write(weightb+' B-t1b1 vs '+weightw+' W-t2b8'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+            tempfile.write(weightb+' B vs '+weightw+' W'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
             tempfile.close()
             
         t1 = datetime.datetime.now()
