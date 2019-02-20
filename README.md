@@ -1,55 +1,78 @@
 # AutoPK
-    Try to draw the elo-playouts curve of those leelazero networks.
-    这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)
-    Based on the elfv0, auto self-fight with the gradual growth of playouts(100 games per fight), generate baseline elo data.
-    Define elfv0 2 playouts with 2000 elo.
-    10 vs 2,50 vs 10,100 vs 50 and so on...now max 25600 vs 12800
-    then use other weights to fight with elfv0 with same playouts(100 games per fight),use the winning percentage to calculate Elo values of the corresponding playouts, Eventually draw the elo-playouts curve.
-    以ELFV0为基础，使用其逐步增长的playouts自动自我对战（每轮对战100局），根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
-    然后用其他权重同po对战ELFV0（每轮对战100局），用胜率计算出对应的elo值，画出测试权重的棋力曲线。
-    以ELFV0权重2po为2000elo值。
+Try to draw the elo-playouts curve of those leelazero networks.
+
+Based on the elfv0, auto self-fight with the gradual growth of playouts(100 games per fight), 10 vs 2,50 vs 10,100 vs 50 and so on...now max 25600 vs 12800, Define elfv0 2 playouts with 2000 elo, generate baseline elo data.
+
+then use other weights to fight with elfv0 with same playouts(100 games per fight),use the winning percentage to calculate Elo values of the corresponding playouts, Eventually draw the elo-playouts curve.
+
+这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)。
+
+以ELFV0为基础，使用其逐步增长的playouts自动自我对战（每轮对战100局），根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
+
+然后用其他权重同po对战ELFV0（每轮对战100局），用胜率计算出对应的elo值，画出测试权重的棋力曲线。以ELFV0权重2po为2000elo值。
 
 # Advantage
-    Automatically save versus, and to save every step of the situation
-    自动保存对战棋谱，并且保存每一步的胜率情况
-    Same playouts pk:save score, time spending.
-    Same time pk:save the average playouts
-    保存对战比分、对战时长，同时间对战保存平均playouts数据
-    Parameter adjustment of freedom, the engine can also be freely adjusted
-    参数调整自由，引擎也可以自由调整
-    Going to Python programming, you can change the program whatever you like
-    会python编程的话，还可以变形出各种测试花样来
+Automatically save versus, and to save every step of the situation.
+
+Same playouts pk:save score, time spending.
+
+Same time pk:save the average playouts.
+
+Parameter adjustment of freedom, the engine can also be freely adjusted.
+
+Going to Python programming, you can change the program whatever you like.
+
+自动保存对战棋谱，并且保存每一步的胜率情况
+
+保存对战比分、对战时长，同时间对战保存平均playouts数据
+
+参数调整自由，引擎也可以自由调整
+
+会python编程的话，还可以变形出各种测试花样来
 
 # To do list
-    GUI interface, animate the progress while fighting
-    图形配置界面，动态显示下棋对战进展
-    Versus breakpoints saved and restored
-    对战断点保存以及恢复
+GUI interface, animate the progress while fighting
+
+Versus breakpoints saved and restored
+
+图形配置界面，动态显示下棋对战进展
+
+对战断点保存以及恢复
     
 # Curves
 ![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/updateto204.jpg "playouts vs elo list")
 ![Screen-shot of elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/Curves.jpg "Screen-shot of elo-playouts Curves")
 
 # Requirements
-    This program requires python2.X environment, thanks to Matthew woodcraft's gomill module.
-    本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
+This program requires python2.X environment, thanks to Matthew woodcraft's gomill module.
+
+本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
 
 # How to use
-    Modify the program, mainly the last paragraph.I noted some detailed description. 
-    Attention:Path to the engine and weights needs to be modified.
-    Results are automatically saved in PKResult.txt file.
-    修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的
-    另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），
-    会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
-    生成的对战结果会自动保存在PKResult.txt文件中
+Modify the program, mainly the last paragraph.I noted some detailed description. 
 
-    Program with same playouts:goEngin-SamePoPK.py
-    同playouts的对战程序为：goEngin-SamePoPK.py
-    Program with same time:goEngin-SameTimePK.py
-    同时间的对战程序为：goEngin-SameTimePK.py
+Attention:Path to the engine and weights needs to be modified.
+
+Results are automatically saved in PKResult.txt file.
+
+Program with same playouts:goEngin-SamePoPK.py
+
+Program with same time:goEngin-SameTimePK.py
+
+修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的
+
+另外，程序在第一次跑时，会因为LeelaZero在新的路径下会生成新的显卡运行参数（leelaz_opencl_tuning），会比较慢或者调参失败中断退出（如20xx系最新显卡），重新运行程序就好。
+
+生成的对战结果会自动保存在PKResult.txt文件中
+
+同playouts的对战程序为：goEngin-SamePoPK.py
+
+同时间的对战程序为：goEngin-SameTimePK.py
 
 See " # " note to modify the part of the description :
+
 参见“#”注释的可修改部分说明：
+
 if __name__ == "__main__":
 
     Program with same playouts:
