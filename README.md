@@ -1,11 +1,13 @@
 # AutoPK
     Try to draw the elo-playouts curve of those leelazero networks.
     这个程序的目标是画leelaZero权重的棋力曲线(elo-playouts)
-    Based on the elfv0, auto self-fight with the gradual growth of playouts, generate baseline elo data.
+    Based on the elfv0, auto self-fight with the gradual growth of playouts(100 games per fight), generate baseline elo data.
     Define elfv0 2 playouts with 2000 elo.
     10 vs 2,50 vs 10,100 vs 50 and so on...now max 25600 vs 12800
-    then use other weights to fight with elfv0 with same playouts,use the winning percentage to calculate Elo values of the corresponding playouts, Eventually draw the elo-playouts curve.
-    以ELFV0为基础，使用其逐步增长的playouts自动自我对战，根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。以ELFV0权重2po为2000elo值。
+    then use other weights to fight with elfv0 with same playouts(100 games per fight),use the winning percentage to calculate Elo values of the corresponding playouts, Eventually draw the elo-playouts curve.
+    以ELFV0为基础，使用其逐步增长的playouts自动自我对战（每轮对战100局），根据胜率计算出对应playouts的elo值，进一步画出棋力曲线来。
+    然后用其他权重同po对战ELFV0（每轮对战100局），用胜率计算出对应的elo值，画出测试权重的棋力曲线。
+    以ELFV0权重2po为2000elo值。
 
 # Advantage
     Automatically save versus, and to save every step of the situation
