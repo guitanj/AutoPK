@@ -105,8 +105,8 @@ if __name__ == "__main__":
         resfile.close()        
         playoutb = playoutb *2 #You can modify : next playouts to be tested 可修改：执黑权重测试完毕100局后，下一轮100局的po值增加量        
         playoutw = playoutw *2 #You can modify : same with the upper line 可修改：一般改成和上一行一样
-        #modifications to the engine and its parameters, you may goto line 201 and 242, note the number of rows may change as the program is modified, search "pbscmd" "pwscmd" variables.
-        #引擎及引擎参数的修改要到201行和242行，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
+        #modifications to the engine and its parameters & working directory, you may goto line 204 and 246, note the number of rows may change as the program is modified, search "pbscmd" "pwscmd" variables.
+        #引擎及引擎参数、引擎的工作路径的修改要到204行和246行附近，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
 
     Program with same time:
     同时间的对战程序：
@@ -137,5 +137,5 @@ if __name__ == "__main__":
         #resfile.write(weightb+' B-t2 vs '+weightw+' W-t4 '+str(blackW)+":"+str(whiteW)+'\n')
         resfile.close()
         spendTime = spendTime*2 #You can modify : set increment of time with each round 可修改：设定每一轮pk时间的增量
-        #modifications to the engine and its parameters, you may goto line 201 and 242, note the number of rows may change as the program is modified, search "pbscmd" "pwscmd" variables.
-        #引擎及引擎参数的修改要到201行和242行，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
+        #modifications to the engine and its parameters & working directory, you may goto line 204 and 246, note the number of rows may change as the program is modified, search "pbscmd" "pwscmd" variables.
+        #引擎及引擎参数、引擎的工作路径的修改要到204行和246行，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
