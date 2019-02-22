@@ -16,13 +16,13 @@ import datetime
 a2n = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'J':8,'K':9,'L':10,'M':11,'N':12,'O':13,'P':14,'Q':15,'R':16,'S':17,'T':18}
 
 class goEngin():
-    def __init__(self, command):
+    def __init__(self, command, cwdstr):
         si = subprocess.STARTUPINFO()
         si.dwFlags = subprocess.CREATE_NEW_CONSOLE \
                      | subprocess.STARTF_USESHOWWINDOW
         si.wShowWindow = subprocess.SW_HIDE
         self.process = Popen(command, bufsize=1,stdin=PIPE, stdout=PIPE, \
-                        stderr=PIPE,startupinfo=si)
+                        stderr=PIPE,startupinfo=si,cwd=cwdstr)
         print('leelaz threading is started...',self.process.pid,'poll:',self.process.poll())
 
         #gtp辅助的运算信息，比如genmove中的过程，胜率，其他选点等都在stderr中输出
@@ -201,12 +201,13 @@ def startPK(num,weightb,weightw,spendTime):
     g.root.set("PW",weightw)
     
     #pbscmd = 'D:\\Go\\leela-zero-0.16-win64\\leelaz.exe -g --noponder -t 2 -wD:\\Go\\weights\\' \
-    pbscmd = 'E:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder -t 2 -wE:\\Go\\Ana_1.26\\weight\\' \
+    pbscmd = 'E:\\Go\\20190219GCPNext\\leelaz.exe -g --noponder --precision half -wE:\\Go\\Ana_1.26\\weight\\' \
              +weightb+' --gpu 0 -p 100000'
+    pbcwdstr = 'E:\\Go\\20190219GCPNext'
     #print pbscmd
     pbcommand = pbscmd.split(' ')
     try:
-        pb = goEngin(pbcommand)
+        pb = goEngin(pbcommand, pbcwdstr)
     except (Exception) as e:
         print("Error found:",e)
         return None
@@ -242,12 +243,13 @@ def startPK(num,weightb,weightw,spendTime):
                 gotErrStr = pb.readErr_nowait()
 
     #pwscmd = 'D:\\Go\\leela-zero-0.16-win64\\leelaz.exe -g --noponder -t 2 -wD:\\Go\\weights\\' \
-    pwscmd = 'E:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder -t 2 -wE:\\Go\\Ana_1.26\\weight\\' \
+    pwscmd = 'E:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder -t 1 --precision half --batchsize 4 -wE:\\Go\\Ana_1.26\\weight\\' \
              +weightw+' --gpu 0 -p 100000'
+    pwcwdstr = 'E:\\Go\\1130fastexit-tensor-accum'
     #print pwscmd
     pwcommand = pwscmd.split(' ')
     try:
-        pw = goEngin(pwcommand)
+        pw = goEngin(pwcommand, pwcwdstr)
     except (Exception) as e:
         print("Error found:",e)
         return None
@@ -488,7 +490,7 @@ if __name__ == "__main__":
         resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
                       '. Spend '+str((t1-t0).total_seconds())+'s\n')
-        resfile.write(weightb+' B vs '+weightw+' W'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+        resfile.write(weightb+' B-nextEngine vs '+weightw+' W-1130Engine'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
         #resfile.write(weightb+' B-t2 vs '+weightw+' W-t4 '+str(blackW)+":"+str(whiteW)+'\n')
         resfile.close()
         spendTime = spendTime*2 #可修改：设定每一轮pk时间的增量
