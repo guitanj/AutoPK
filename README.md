@@ -44,9 +44,9 @@ Versus breakpoints saved and restored
 ![Screen-shot of elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/Curves.jpg "Screen-shot of elo-playouts Curves")
 
 # Requirements
-This program requires python2.X environment, thanks to Matthew woodcraft's gomill module.
+This program requires python2.X or python3.X environment, thanks to Matthew woodcraft's gomill & sgfmill module.
 
-本程序需要python2.x环境，感谢Matthew Woodcraft的gomill模块。
+本程序需要python2.x or python3.X环境，感谢Matthew Woodcraft的gomill & sgfmill模块。
 
 # How to use
 Modify the program, mainly the last paragraph.I noted some detailed description. 
@@ -65,9 +65,9 @@ Program with same time:goEngin-SameTimePK.py
 
 生成的对战结果会自动保存在PKResult.txt文件中
 
-同playouts的对战程序为：goEngin-SamePoPK.py
+同playouts的对战程序为：goEngin-SamePoPK.py or goEngin-SamePoPK-PY3.py for python 3.X
 
-同时间的对战程序为：goEngin-SameTimePK.py
+同时间的对战程序为：goEngin-SameTimePK.py or goEngin-SameTimePK-PY3.py for python 3.X
 
 See " # " note to modify the part of the description :
 
