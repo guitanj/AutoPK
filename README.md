@@ -40,8 +40,8 @@ Versus breakpoints saved and restored
 对战断点保存以及恢复
     
 # Curves
-![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/playoutsVSEloList-updatev2and206.jpg "playouts vs elo list")
-![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/40b-elo-playoutsCurve-updateTov2206.jpg "Screen-shot of 40b-elo-playouts Curves")
+![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/playoutsVSEloList-update207.jpg "playouts vs elo list")
+![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/40b-elo-playoutsCurve-updateTo207.jpg "Screen-shot of 40b-elo-playouts Curves")
 ![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/15b-elo-playoutsCurve.jpg "Screen-shot of 15b-elo-playouts Curves")
 
 # Requirements
