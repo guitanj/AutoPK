@@ -45,9 +45,9 @@ Versus breakpoints saved and restored
 ![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/15b-elo-playoutsCurve.jpg "Screen-shot of 15b-elo-playouts Curves")
 
 # Requirements
-This program requires python2.X or python3.X environment, thanks to Matthew woodcraft's gomill & sgfmill module.
+This program requires python2.X(with gomill) or python3.X(with sgfmill) environment, thanks to Matthew woodcraft's gomill & sgfmill module.
 
-本程序需要python2.x or python3.X环境，感谢Matthew Woodcraft的gomill & sgfmill模块。
+本程序需要python2.x(with gomill) or python3.X(with sgfmill)环境，感谢Matthew Woodcraft的gomill & sgfmill模块。
 
 # How to use
 Modify the program, mainly the last paragraph.I noted some detailed description. 
@@ -56,9 +56,9 @@ Attention:Path to the engine and weights needs to be modified.
 
 Results are automatically saved in PKResult.txt file.
 
-Program with same playouts:goEngin-SamePoPK.py
+Program with same playouts:goEngin-SamePoPK.py or goEngin-SamePoPK-PY3.py for python 3.X
 
-Program with same time:goEngin-SameTimePK.py
+Program with same time:goEngin-SameTimePK.py or goEngin-SameTimePK-PY3.py for python 3.X
 
 修改程序，主要是最后一段，已做详细的说明。需要特别注意的是引擎以及权重的路径需要改成你自己的
 
