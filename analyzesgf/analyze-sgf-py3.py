@@ -20,12 +20,135 @@ flyPoint += [(r,c) for r in [5,13] for c in [2,16]]
 #天元
 tengenPoint = [9,9]
 
-#全星位开局（对角星或者二连星）
-openning_4S = [[],starPoint,starPoint,starPoint,starPoint]
-#二连星对星小目
-openning_2SSK = [[],starPoint,starPoint,starPoint,komokuPoint]
-#星位后点三三
-openning_2S33 = [[],starPoint,starPoint,sansanPoint]
+#2星位（对角星或者二连星）
+openning_2S = [starPoint,starPoint]
+#星小目
+openning_SK = [starPoint,komokuPoint]
+#小目星
+openning_KS = [komokuPoint,starPoint]
+#双小目
+openning_KK = [komokuPoint,komokuPoint]
+#2个星位后点三三
+openning_2S33 = [starPoint,starPoint,sansanPoint]
+#小目星位后点三三
+openning_KS33 = [komokuPoint,starPoint,sansanPoint]
+
+#判断是否为对角星
+def is_diagonalStar(steps):
+    is_openning_2S = True
+    is_openning_diagonalStar = False  #对角星
+    #基础判断
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_diagonalStar:',row,col)
+        if (row,col) not in openning_2S[eachStep]:
+            is_openning_2S = False
+
+    #黑1、3两手棋坐标全不相同则为对角星
+    if is_openning_2S:
+        row1, col1 = steps[0]
+        row2, col2 = steps[1]
+        #print(row1, col1,row2, col2)
+        if row1 != row2 and col1 != col2:
+            return True
+    return False
+
+#判断是否为二连星
+def is_sameSideStar(steps):
+    is_openning_2S = True
+    #基础判断
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_sameSideStar:',row,col,eachStep)
+        if (row,col) not in openning_2S[eachStep]:
+            is_openning_2S = False
+
+    #黑1、3两手棋坐标全不相同则为对角星
+    if is_openning_2S:
+        row1, col1 = steps[0]
+        row2, col2 = steps[1]
+        #print(row1, col1,row2, col2)
+        if row1 != row2 and col1 != col2:
+            return False
+        else:
+            return True
+    return False
+
+#判断是否为星小目
+def is_starKomoku(steps):
+    is_openning_SK = True
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_starKomoku:',row,col)
+        if (row,col) not in openning_SK[eachStep]:
+            is_openning_SK = False
+    if is_openning_SK:
+        return True
+    return False
+
+#判断是否为小目星
+def is_komokuStar(steps):
+    is_openning_KS = True
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_komokuStar:',row,col)
+        if (row,col) not in openning_KS[eachStep]:
+            is_openning_KS = False
+    if is_openning_KS:
+        return True
+    return False
+
+#判断是否是两个星位后点三三
+def is_2starSansan(steps):
+    is_openning_2S33 = True
+    for eachStep in range(3):
+        row, col = steps[eachStep]
+        if (row,col) not in openning_2S33[eachStep]:
+            is_openning_2S33 = False
+    if is_openning_2S33:
+        #需要补测一下三三是否点在第二手的三三位置
+        row2, col2 = steps[1]
+        row3, col3 = steps[2]
+        #print('  is_2starSansan',row2,col2,row3,col3)
+        if row2 < 9 and col2 < 9:    #左下角
+            if row3 == 2 and col3 == 2:
+                return True
+        elif row2 < 9 and col2 > 9:    #右下角
+            if row3 == 2 and col3 == 16:
+                return True
+        elif row2 > 9 and col2 < 9:    #左上角
+            if row3 == 16 and col3 == 2:
+                return True
+        elif row2 > 9 and col2 > 9:    #右上角
+            if row3 == 16 and col3 == 16:
+                return True
+    return False
+
+#判断是否是黑小目白星位后黑点三三
+def is_KS33(steps):
+    is_openning_KS33 = True
+    for eachStep in range(3):
+        row, col = steps[eachStep]
+        if (row,col) not in openning_KS33[eachStep]:
+            is_openning_KS33 = False
+    if is_openning_KS33:
+        #需要补测一下三三是否点在第二手的三三位置
+        row2, col2 = steps[1]
+        row3, col3 = steps[2]
+        #print('  is_KS33',row2,col2,row3,col3)
+        if row2 < 9 and col2 < 9:    #左下角
+            if row3 == 2 and col3 == 2:
+                return True
+        elif row2 < 9 and col2 > 9:    #右下角
+            if row3 == 2 and col3 == 16:
+                return True
+        elif row2 > 9 and col2 < 9:    #左上角
+            if row3 == 16 and col3 == 2:
+                return True
+        elif row2 > 9 and col2 > 9:    #右上角
+            if row3 == 16 and col3 == 16:
+                return True
+    return False
 
 result=[]
 for root,dirs,files in os.walk("."):
@@ -47,92 +170,77 @@ for fname in result:
 
     mainSequence = sgf_game.get_main_sequence()
 
-    is_openning_4S = True
-    is_openning_diagonalStar = False  #对角星
-    is_openning_sameSideStar = False  #二连星
-    #基础判断
-    for eachStep in range(1,len(openning_4S)):
-        (color,stepmove) = mainSequence[eachStep].get_move()
-        if stepmove != None:
-            row, col = stepmove
-        else:
-            is_openning_4Star = False
-            print("读取棋谱信息出错")
-            break
-        if (row,col) not in openning_4S[eachStep]:
-            is_openning_4S = False
+    #基础判断,取黑棋1、3步以及白棋2、4步
+    (color,step1) = mainSequence[1].get_move()
+    (color,step3) = mainSequence[3].get_move()
+    (color,step2) = mainSequence[2].get_move()
+    (color,step4) = mainSequence[4].get_move()
+    #print(step1,step2,step3,step4)
+    if step1 != None:
+        row, col = step1
+    else:
+        print("读取棋谱信息出错")
+        break
 
-    #还需要判断是二连星还是对角星，黑1、3两手棋坐标全不相同则为对角星，否则一定是二连星
-    if is_openning_4S:
-        (color1,stepmove1) = mainSequence[1].get_move()
-        row1, col1 = stepmove1
-        (color3,stepmove3) = mainSequence[3].get_move()
-        row3, col3 = stepmove3
-        #print(row1, col1,row3, col3)
-        if row1 != row3 and col1 != col3:
-            is_openning_diagonalStar = True
-        else:
-            is_openning_sameSideStar = True
-    if is_openning_diagonalStar:    #对角星
-        (color5,stepmove5) = mainSequence[5].get_move()
-        row5, col5 = stepmove5
-        if (row5,col5) in sansanPoint:
-            #print(fname,"对角星点三三开局")
+    if is_diagonalStar([step1,step3]):  #黑对角星开局
+        #print('黑对角星开局')
+        if is_diagonalStar([step2,step4]):   #白也是对角星
+            (color5,stepmove5) = mainSequence[5].get_move()
+            row5, col5 = stepmove5
+            #print('对角星vs对角星',row5,col5)
+            if (row5,col5) in sansanPoint:
+                #print(fname,"对角星点三三开局")
+                continue
+            elif (row5,col5) in flyPoint:
+                #print(fname,"对角星小飞挂开局")
+                continue
+        elif is_starKomoku([step2,step4]):  #白星对角小目开局
+            #print(fname,"对角星对星对角小目开局")
             continue
-        elif (row5,col5) in flyPoint:
-            #print(fname,"对角星小飞挂开局")
+        elif is_komokuStar([step2,step4]):  #白小目星开局
+            #print(fname,"对角星对小目星开局")
             continue
-    if is_openning_sameSideStar:    #二连星
-        (color5,stepmove5) = mainSequence[5].get_move()
-        row5, col5 = stepmove5
-        if (row5,col5) in sansanPoint:
-            #print(fname,"二连星点三三开局")
+    elif is_sameSideStar([step1,step3]):    #黑二连星开局
+        #print('黑二连星开局')
+        if is_sameSideStar([step2,step4]):  #白也是二连星开局
+            (color5,stepmove5) = mainSequence[5].get_move()
+            row5, col5 = stepmove5
+            #print('二连星vs二连星',row5,col5)
+            if (row5,col5) in sansanPoint:
+                #print(fname,"二连星点三三开局")
+                continue
+            elif (row5,col5) in flyPoint:
+                #print(fname,"二连星小飞挂开局")
+                continue
+        elif is_starKomoku([step2,step4]):  #白星小目开局
+            #print(fname,"二连星对星小目开局")
             continue
-        elif (row5,col5) in flyPoint:
-            #print(fname,"二连星小飞挂开局")
+        elif is_komokuStar([step2,step4]):  #白小目星开局
+            #print(fname,"二连星对小目星开局")
             continue
-    #if not is_openning_diagonalStar and not is_openning_sameSideStar:
-    is_openning_2SSK = True
-    #判断是否是二连星对星小目开局
-    for eachStep in range(1,len(openning_2SSK)):
-        (color,stepmove) = mainSequence[eachStep].get_move()
-        if stepmove != None:
-            row, col = stepmove
-        if (row,col) not in openning_2SSK[eachStep]:
-            is_openning_2SSK = False
-    if is_openning_2SSK:
-        #print(fname,"二连星对星小目开局")
+    elif is_komokuStar([step1,step3]):  #黑小目星开局
+        #print('黑小目星开局')
+        if is_starKomoku([step2,step4]):    #白星小目开局
+            #print(fname,"小目星对星小目开局")
+            continue
+        if is_sameSideStar([step2,step4]):  #白二连星开局
+            #print(fname,"小目星对二连星开局")
+            continue
+        if is_komokuStar([step2,step4]):    #白小目星开局
+            #print(fname,"小目星对小目星开局")
+            continue
+    elif is_starKomoku([step1,step3]):  #黑星小目开局
+        #print('黑星小目开局')
+        if is_starKomoku([step2,step4]):    #白星小目开局
+            #print(fname,"星小目对星小目开局")
+            continue
+        if is_sameSideStar([step2,step4]):  #白二连星开局
+            #print(fname,"星小目对二连星开局")
+            continue
+    elif is_2starSansan([step1,step2,step3]):
+        #print(fname,"星位后点三三开局")
         continue
-
-    is_openning_2S33 = True
-    #判断是否是星位后点三三开局
-    for eachStep in range(1,len(openning_2S33)):
-        (color,stepmove) = mainSequence[eachStep].get_move()
-        if stepmove != None:
-            row, col = stepmove
-        if (row,col) not in openning_2S33[eachStep]:
-            is_openning_2S33 = False
-    if is_openning_2S33:
-        #需要补测一下三三是否点在第二手的三三位置
-        (color2,stepmove2) = mainSequence[2].get_move()
-        row2, col2 = stepmove2
-        (color3,stepmove3) = mainSequence[3].get_move()
-        row3, col3 = stepmove3
-        if row2 < 9 and col2 < 9:    #左下角
-            if row3 == 2 and col3 == 2:
-                #print(fname,"星位后点三三开局")
-                continue
-        elif row2 < 9 and col2 > 9:    #右下角
-            if row3 == 2 and col3 == 16:
-                #print(fname,"星位后点三三开局")
-                continue
-        elif row2 < 9 and col2 > 9:    #左上角
-            if row3 == 16 and col3 == 2:
-                #print(fname,"星位后点三三开局")
-                continue
-        elif row2 < 9 and col2 > 9:    #右上角
-            if row3 == 16 and col3 == 16:
-                #print(fname,"星位后点三三开局")
-                continue
-
+    elif is_KS33([step1,step2,step3]):
+        #print(fname,"小目星位后点三三开局")
+        continue
     print(fname,"未知开局")
