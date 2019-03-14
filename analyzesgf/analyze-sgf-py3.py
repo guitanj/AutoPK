@@ -251,7 +251,7 @@ for fname in result:
     #print(sgf_game.get_player_name('b'),'vs',sgf_game.get_player_name('w'), \
     #      'komi',sgf_game.get_komi(),'Result:',sgf_game.get_winner(),'wins')
 
-    whowins = fname[-6]
+    whowins = fname[fname.find('+')-1]  #对战文件名中“+”前面是谁获胜的字符
     if whowins == 'b':
         bwin += 1
         num += 1
@@ -505,50 +505,41 @@ for fname in result:
         continue
     print(fname,"未知开局")
 
-if have_dsds33: print('对角星点三三',dsds33,"黑胜率{:.2f}%".format(bwin_dsds33/dsds33*100))
-if have_dsdsfly: print('对角星小飞挂',dsdsfly,"黑胜率{:.2f}%".format(bwin_dsdsfly/dsdsfly*100))
-if have_dssk: print('对角星对星对角小目',dssk,"黑胜率{:.2f}%".format(bwin_dssk/dssk*100))
-if have_dsks: print('对角星对小目星',dsks,"黑胜率{:.2f}%".format(bwin_dsks/dsks*100))
-if have_dss33: print('对角星对星三三',dss33,"黑胜率{:.2f}%".format(bwin_dss33/dss33*100))
-if have_ds33s: print('对角星对三三星',ds33s,"黑胜率{:.2f}%".format(bwin_ds33s/ds33s*100))
-print()
+if have_dsds33: print('对角星点三三',dsds33,"黑胜率{:.2f}%".format(bwin_dsds33*1.0/dsds33*100),bwin_dsds33)
+if have_dsdsfly: print('对角星小飞挂',dsdsfly,"黑胜率{:.2f}%".format(bwin_dsdsfly*1.0/dsdsfly*100),bwin_dsdsfly)
+if have_dssk: print('对角星对星对角小目',dssk,"黑胜率{:.2f}%".format(bwin_dssk*1.0/dssk*100),bwin_dssk)
+if have_dsks: print('对角星对小目星',dsks,"黑胜率{:.2f}%".format(bwin_dsks*1.0/dsks*100),bwin_dsks)
+if have_dss33: print('对角星对星三三',dss33,"黑胜率{:.2f}%".format(bwin_dss33*1.0/dss33*100),bwin_dss33)
+if have_ds33s: print('对角星对三三星',ds33s,"黑胜率{:.2f}%".format(bwin_ds33s*1.0/ds33s*100),bwin_ds33s)
 
-if have_ssssss33: print('二连星点三三',ssssss33,"黑胜率{:.2f}%".format(bwin_ssssss33/ssssss33*100))
-if have_ssssssfly: print('二连星小飞挂',ssssssfly,"黑胜率{:.2f}%".format(bwin_ssssssfly/ssssssfly*100))
-if have_ssssk: print('二连星对星小目',ssssk,"黑胜率{:.2f}%".format(bwin_ssssk/ssssk*100))
-if have_sssks: print('二连星对小目星',sssks,"黑胜率{:.2f}%".format(bwin_sssks/sssks*100))
-if have_ssskk: print('二连星对双小目',ssskk,"黑胜率{:.2f}%".format(bwin_ssskk/ssskk*100))
-print()
+if have_ssssss33: print(u'二连星点三三',ssssss33,"黑胜率{:.2f}%".format(bwin_ssssss33*1.0/ssssss33*100),bwin_ssssss33)
+if have_ssssssfly: print(u'二连星小飞挂',ssssssfly,"黑胜率{:.2f}%".format(bwin_ssssssfly*1.0/ssssssfly*100),bwin_ssssssfly)
+if have_ssssk: print(u'二连星对星小目',ssssk,"黑胜率{:.2f}%".format(bwin_ssssk*1.0/ssssk*100),bwin_ssssk)
+if have_sssks: print(u'二连星对小目星',sssks,"黑胜率{:.2f}%".format(bwin_sssks*1.0/sssks*100),bwin_sssks)
+if have_ssskk: print(u'二连星对双小目',ssskk,"黑胜率{:.2f}%".format(bwin_ssskk*1.0/ssskk*100),bwin_ssskk)
 
-if have_kssk: print('小目星对星小目',kssk,"黑胜率{:.2f}%".format(bwin_kssk/kssk*100))
-if have_kssss: print('小目星对二连星',kssss,"黑胜率{:.2f}%".format(bwin_kssss/kssss*100))
-if have_ksks: print('小目星对小目星',ksks,"黑胜率{:.2f}%".format(bwin_ksks/ksks*100))
-if have_kskk: print('小目星对双小目',kskk,"黑胜率{:.2f}%".format(bwin_kskk/kskk*100))
-print()
+if have_kssk: print('小目星对星小目',kssk,"黑胜率{:.2f}%".format(bwin_kssk*1.0/kssk*100),bwin_kssk)
+if have_kssss: print('小目星对二连星',kssss,"黑胜率{:.2f}%".format(bwin_kssss*1.0/kssss*100),bwin_kssss)
+if have_ksks: print('小目星对小目星',ksks,"黑胜率{:.2f}%".format(bwin_ksks*1.0/ksks*100),bwin_ksks)
+if have_kskk: print('小目星对双小目',kskk,"黑胜率{:.2f}%".format(bwin_kskk*1.0/kskk*100),bwin_kskk)
 
-if have_sksk: print('星小目对星小目',sksk,"黑胜率{:.2f}%".format(bwin_sksk/sksk*100))
-if have_sksss: print('星小目对二连星',sksss,"黑胜率{:.2f}%".format(bwin_sksss/sksss*100))
-if have_skds: print('星小目对对角星',skds,"黑胜率{:.2f}%".format(bwin_skds/skds*100))
-if have_skkk: print('星小目对双小目',skkk,"黑胜率{:.2f}%".format(bwin_skkk/skkk*100))
-if have_skks: print('星小目对小目星',skks,"黑胜率{:.2f}%".format(bwin_skks/skks*100))
-print()
+if have_sksk: print('星小目对星小目',sksk,"黑胜率{:.2f}%".format(bwin_sksk*1.0/sksk*100),bwin_sksk)
+if have_sksss: print('星小目对二连星',sksss,"黑胜率{:.2f}%".format(bwin_sksss*1.0/sksss*100),bwin_sksss)
+if have_skds: print('星小目对对角星',skds,"黑胜率{:.2f}%".format(bwin_skds*1.0/skds*100),bwin_skds)
+if have_skkk: print('星小目对双小目',skkk,"黑胜率{:.2f}%".format(bwin_skkk*1.0/skkk*100),bwin_skkk)
+if have_skks: print('星小目对小目星',skks,"黑胜率{:.2f}%".format(bwin_skks*1.0/skks*100),bwin_skks)
 
-if have_kksk: print('双小目对星小目',kksk,"黑胜率{:.2f}%".format(bwin_kksk/kksk*100))
-if have_kksss: print('双小目对二连星',kksss,"黑胜率{:.2f}%".format(bwin_kksss/kksss*100))
-if have_kkds: print('双小目对对角星',kkds,"黑胜率{:.2f}%".format(bwin_kkds/kkds*100))
-if have_kkkk: print('双小目对双小目',kkkk,"黑胜率{:.2f}%".format(bwin_kkkk/kkkk*100))
-print()
+if have_kksk: print('双小目对星小目',kksk,"黑胜率{:.2f}%".format(bwin_kksk*1.0/kksk*100),bwin_kksk)
+if have_kksss: print('双小目对二连星',kksss,"黑胜率{:.2f}%".format(bwin_kksss*1.0/kksss*100),bwin_kksss)
+if have_kkds: print('双小目对对角星',kkds,"黑胜率{:.2f}%".format(bwin_kkds*1.0/kkds*100),bwin_kkds)
+if have_kkkk: print('双小目对双小目',kkkk,"黑胜率{:.2f}%".format(bwin_kkkk*1.0/kkkk*100),bwin_kkkk)
 
-if have_s54sk: print('星高目对星小目',s54sk,"黑胜率{:.2f}%".format(bwin_s54sk/s54sk*100))
-if have_s54sss: print('星高目对二连星',s54sss,"黑胜率{:.2f}%".format(bwin_s54sss/s54sss*100))
-if have_s54ds: print('星高目对对角星',s54ds,"黑胜率{:.2f}%".format(bwin_s54ds/s54ds*100))
-if have_s54ks: print('星高目对小目星',s54ks,"黑胜率{:.2f}%".format(bwin_s54ks/s54ks*100))
-print()
+if have_s54sk: print('星高目对星小目',s54sk,"黑胜率{:.2f}%".format(bwin_s54sk*1.0/s54sk*100),bwin_s54sk)
+if have_s54sss: print('星高目对二连星',s54sss,"黑胜率{:.2f}%".format(bwin_s54sss*1.0/s54sss*100),bwin_s54sss)
+if have_s54ds: print('星高目对对角星',s54ds,"黑胜率{:.2f}%".format(bwin_s54ds*1.0/s54ds*100),bwin_s54ds)
+if have_s54ks: print('星高目对小目星',s54ks,"黑胜率{:.2f}%".format(bwin_s54ks*1.0/s54ks*100),bwin_s54ks)
 
-if have_twoStar33: print('星位后点三三',twoStar33,"黑胜率{:.2f}%".format(bwin_twoStar33/twoStar33*100))
-if have_ks33: print('小目星位后点三三',ks33,"黑胜率{:.2f}%".format(bwin_ks33/ks33*100))
-print()
+if have_twoStar33: print(u'星位后点三三',twoStar33,"黑胜率{:.2f}%".format(bwin_twoStar33*1.0/twoStar33*100),bwin_twoStar33)
+if have_ks33: print(u'小目星位后点三三',ks33,"黑胜率{:.2f}%".format(bwin_ks33*1.0/ks33*100),bwin_ks33)
 
-#print('',)
-
-print("黑胜率{:.2f}%".format(bwin/num*100))
+if num>0:   print(bwin,"黑胜率{:.2f}%".format(bwin*1.0/num*100))
