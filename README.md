@@ -1,3 +1,8 @@
+# Curves
+![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/playoutsVSEloList-update208.jpg "playouts vs elo list")
+![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/40b-elo-playoutsCurve-updateTo208.jpg "Screen-shot of 40b-elo-playouts Curves")
+![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/15b-elo-playoutsCurve-update157-990.jpg "Screen-shot of 15b-elo-playouts Curves")
+
 # AutoPK
 Try to draw the elo-playouts curve of those leelazero networks.
 
@@ -38,11 +43,6 @@ Versus breakpoints saved and restored
 图形配置界面，动态显示下棋对战进展
 
 对战断点保存以及恢复
-    
-# Curves
-![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/playoutsVSEloList-update208.jpg "playouts vs elo list")
-![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/40b-elo-playoutsCurve-updateTo208.jpg "Screen-shot of 40b-elo-playouts Curves")
-![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/15b-elo-playoutsCurve-update157-990.jpg "Screen-shot of 15b-elo-playouts Curves")
 
 # Requirements
 This program requires python2.X(with gomill) or python3.X(with sgfmill) environment, thanks to Matthew woodcraft's gomill & sgfmill module.
