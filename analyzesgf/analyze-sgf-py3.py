@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from time import sleep
 from sgfmill import ascii_boards
 from sgfmill import sgf
 from sgfmill import sgf_moves
@@ -20,6 +21,9 @@ sansanPoint = [(r,c) for r in [2,16] for c in [2,16]]
 #星位小飞挂
 flyPoint = [(r,c) for r in [2,16] for c in [5,13]]
 flyPoint += [(r,c) for r in [5,13] for c in [2,16]]
+#小目低挂
+kflyPoint = [(r,c) for r in [2,16] for c in [4,14]]
+kflyPoint += [(r,c) for r in [4,14] for c in [2,16]]
 #天元
 tengenPoint = [9,9]
 
@@ -35,12 +39,18 @@ openning_KK = [komokuPoint,komokuPoint]
 openning_S33 = [starPoint,sansanPoint]
 #三三星
 openning_33S = [sansanPoint,starPoint]
+#小目三三
+openning_K33 = [komokuPoint,sansanPoint]
+#三三小目
+openning_33K = [sansanPoint,komokuPoint]
 #星高目
 openning_S54 = [starPoint,t54Point]
 #2个星位后点三三
 openning_2S33 = [starPoint,starPoint,sansanPoint]
 #小目星位后点三三
 openning_KS33 = [komokuPoint,starPoint,sansanPoint]
+#星位小目后低挂
+openning_SKFly = [starPoint,komokuPoint,kflyPoint]
 
 #判断是否为对角星
 def is_diagonalStar(steps):
@@ -155,6 +165,30 @@ def is_33S(steps):
         return True
     return False
 
+#判断是否为小目三三
+def is_K33(steps):
+    is_openning_K33 = True
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_K33:',row,col
+        if (row,col) not in openning_K33[eachStep]:
+            is_openning_K33 = False
+    if is_openning_K33:
+        return True
+    return False
+
+#判断是否为三三小目
+def is_33K(steps):
+    is_openning_33K = True
+    for eachStep in range(2):
+        row, col = steps[eachStep]
+        #print('  is_33K:',row,col
+        if (row,col) not in openning_33K[eachStep]:
+            is_openning_33K = False
+    if is_openning_33K:
+        return True
+    return False
+
 #判断是否是两个星位后点三三
 def is_2starSansan(steps):
     is_openning_2S33 = True
@@ -207,6 +241,17 @@ def is_KS33(steps):
                 return True
     return False
 
+#判断是否是黑星位白小目后黑低挂白小目
+def is_SKFly(steps):
+    is_openning_SKFly = True
+    for eachStep in range(3):
+        row, col = steps[eachStep]
+        if (row,col) not in openning_SKFly[eachStep]:
+            is_openning_SKFly = False
+    if is_openning_SKFly:
+        return True
+    return False
+
 result=[]
 for root,dirs,files in os.walk("."):
     for eachfile in files:
@@ -215,43 +260,43 @@ for root,dirs,files in os.walk("."):
             #print(eachfile)
 bwin = wwin = num = 0
 
-dsds33=dsdsfly=dssk=dsks=dss33=ds33s=0
-ssssss33=ssssssfly=ssssk=sssks=ssskk=0
-kssk=kssss=ksks=kskk=0
-sksk=sksss=skds=skkk=skks=0
-kksk=kksss=kkds=kkkk=0
-s54sk=s54sss=s54ds=s54ks=0
-twoStar33=ks33=0
+dsds33=dsdsfly=dssk=dss33=dskk=0
+ssssss33=ssssssfly=ssssk=ssskk=0
+sksk=sksss=skds=skkk=0
+s33sk=s33sss=s33ds=s33kk=0
+kksk=kksss=kkds=kkkk=kk33k=kkk33=0
+s54sk=s54sss=s54ds=s54s33=0
+twoStar33=ks33=skfly=0
 
-have_dsds33=have_dsdsfly=have_dssk=have_dsks=have_dss33=have_ds33s=False
-have_ssssss33=have_ssssssfly=have_ssssk=have_sssks=have_ssskk=False
-have_kssk=have_kssss=have_ksks=have_kskk=False
-have_sksk=have_sksss=have_skds=have_skkk=have_skks=False
-have_kksk=have_kksss=have_kkds=have_kkkk=False
-have_s54sk=have_s54sss=have_s54ds=have_s54ks=False
-have_twoStar33=have_ks33=False
+have_dsds33=have_dsdsfly=have_dssk=have_dss33=have_dskk=False
+have_ssssss33=have_ssssssfly=have_ssssk=have_ssskk=False
+have_sksk=have_sksss=have_skds=have_skkk=False
+have_s33sk=have_s33sss=have_s33ds=have_s33kk=False
+have_kksk=have_kksss=have_kkds=have_kkkk=have_kk33k=have_kkk33=False
+have_s54sk=have_s54sss=have_s54ds=have_s54s33=False
+have_twoStar33=have_ks33=have_skfly=False
 
-bwin_dsds33=bwin_dsdsfly=bwin_dssk=bwin_dsks=bwin_dss33=bwin_ds33s=0
-bwin_ssssss33=bwin_ssssssfly=bwin_ssssk=bwin_sssks=bwin_ssskk=0
-bwin_kssk=bwin_kssss=bwin_ksks=bwin_kskk=0
-bwin_sksk=bwin_sksss=bwin_skds=bwin_skkk=bwin_skks=0
-bwin_kksk=bwin_kksss=bwin_kkds=bwin_kkkk=0
-bwin_s54sk=bwin_s54sss=bwin_s54ds=bwin_s54ks=0
-bwin_twoStar33=bwin_ks33=0
+bwin_dsds33=bwin_dsdsfly=bwin_dssk=bwin_dss33=bwin_dskk=0
+bwin_ssssss33=bwin_ssssssfly=bwin_ssssk=bwin_ssskk=0
+bwin_sksk=bwin_sksss=bwin_skds=bwin_skkk=0
+bwin_s33sk=bwin_s33sss=bwin_s33ds=bwin_s33kk=0
+bwin_kksk=bwin_kksss=bwin_kkds=bwin_kkkk=bwin_kk33k=bwin_kkk33=0
+bwin_s54sk=bwin_s54sss=bwin_s54ds=bwin_s54s33=0
+bwin_twoStar33=bwin_ks33=bwin_skfly=0
 
 for fname in result:
     sgffile=open(fname,'rb')
     sgf_src = sgffile.read()
     sgffile.close()
     try:
-        sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
+        sgf_game = sgf.Sgf_game.from_string(sgf_src)
     except ValueError:
         raise Exception("bad sgf file")
 
     #print(sgf_game.get_player_name('b'),'vs',sgf_game.get_player_name('w'), \
     #      'komi',sgf_game.get_komi(),'Result:',sgf_game.get_winner(),'wins')
 
-    whowins = fname[fname.find('+')-1]  #对战文件名中“+”前面是谁获胜的字符
+    whowins = fname[fname.find('+')-1]
     if whowins == 'b':
         bwin += 1
         num += 1
@@ -278,7 +323,7 @@ for fname in result:
         if is_diagonalStar([step2,step4]):   #白也是对角星
             (color5,stepmove5) = mainSequence[5].get_move()
             row5, col5 = stepmove5
-            #print('对角星vs对角星',row5,col5)
+            #print('对角星vs对角星',row5,col5
             if (row5,col5) in sansanPoint:
                 #print(fname,"对角星点三三开局")
                 have_dsds33 = True
@@ -293,19 +338,12 @@ for fname in result:
                 if whowins == 'b':
                     bwin_dsdsfly += 1
                 continue
-        elif is_starKomoku([step2,step4]):  #白星对角小目开局
+        elif is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):  #白星对角小目或者小目星开局
             #print(fname,"对角星对星对角小目开局")
             have_dssk = True
             dssk += 1
             if whowins == 'b':
                 bwin_dssk += 1
-            continue
-        elif is_komokuStar([step2,step4]):  #白小目星开局
-            #print(fname,"对角星对小目星开局")
-            have_dsks = True
-            dsks += 1
-            if whowins == 'b':
-                bwin_dsks += 1
             continue
         elif is_S33([step2,step4]):  #白星33开局
             #print(fname,"对角星对星三三开局")
@@ -316,10 +354,17 @@ for fname in result:
             continue
         elif is_33S([step2,step4]):  #白33星开局
             #print(fname,"对角星对三三星开局")
-            have_ds33s = True
-            ds33s += 1
+            have_dss33 = True
+            dss33 += 1
             if whowins == 'b':
-                bwin_ds33s += 1
+                bwin_dss33 += 1
+            continue
+        if is_KK([step2,step4]):    #白双小目开局
+            #print(fname,"对角星对双小目开局")
+            have_dskk = True
+            dskk += 1
+            if whowins == 'b':
+                bwin_dskk += 1
             continue
     elif is_sameSideStar([step1,step3]):    #黑二连星开局
         #print('黑二连星开局')
@@ -341,19 +386,12 @@ for fname in result:
                 if whowins == 'b':
                     bwin_ssssssfly += 1
                 continue
-        elif is_starKomoku([step2,step4]):  #白星小目开局
+        elif is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):  #白星小目或小目星开局
             #print(fname,"二连星对星小目开局")
             have_ssssk = True
             ssssk += 1
             if whowins == 'b':
                 bwin_ssssk += 1
-            continue
-        elif is_komokuStar([step2,step4]):  #白小目星开局
-            #print(fname,"二连星对小目星开局")
-            have_sssks = True
-            sssks += 1
-            if whowins == 'b':
-                bwin_sssks += 1
             continue
         if is_KK([step2,step4]):    #白双小目开局
             #print(fname,"二连星对双小目开局")
@@ -362,39 +400,9 @@ for fname in result:
             if whowins == 'b':
                 bwin_ssskk += 1
             continue
-    elif is_komokuStar([step1,step3]):  #黑小目星开局
-        #print('黑小目星开局')
-        if is_starKomoku([step2,step4]):    #白星小目开局
-            #print(fname,"小目星对星小目开局")
-            have_kssk = True
-            kssk += 1
-            if whowins == 'b':
-                bwin_kssk += 1
-            continue
-        if is_sameSideStar([step2,step4]):  #白二连星开局
-            #print(fname,"小目星对二连星开局")
-            have_kssss = True
-            kssss += 1
-            if whowins == 'b':
-                bwin_kssss += 1
-            continue
-        if is_komokuStar([step2,step4]):    #白小目星开局
-            #print(fname,"小目星对小目星开局")
-            have_ksks = True
-            ksks += 1
-            if whowins == 'b':
-                bwin_ksks += 1
-            continue
-        if is_KK([step2,step4]):    #白双小目开局
-            #print(fname,"小目星对双小目开局")
-            have_kskk = True
-            kskk += 1
-            if whowins == 'b':
-                bwin_kskk += 1
-            continue
-    elif is_starKomoku([step1,step3]):  #黑星小目开局
+    elif is_starKomoku([step1,step3]) or is_komokuStar([step1,step3]):  #黑星小目或小目星开局
         #print('黑星小目开局')
-        if is_starKomoku([step2,step4]):    #白星小目开局
+        if is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):    #白星小目或小目星开局
             #print(fname,"星小目对星小目开局")
             have_sksk = True
             sksk += 1
@@ -422,16 +430,9 @@ for fname in result:
             if whowins == 'b':
                 bwin_skkk += 1
             continue
-        if is_komokuStar([step2,step4]):   #白小目星
-            #print(fname,"星小目对小目星开局")
-            have_skks = True
-            skks += 1
-            if whowins == 'b':
-                bwin_skks += 1
-            continue
     elif is_KK([step1,step3]):  #黑双小目开局
         #print('黑双小目开局')
-        if is_starKomoku([step2,step4]):    #白星小目开局
+        if is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):    #白星小目或小目星开局
             #print(fname,"双小目对星小目开局")
             have_kksk = True
             kksk += 1
@@ -459,9 +460,53 @@ for fname in result:
             if whowins == 'b':
                 bwin_kkkk += 1
             continue
+        if is_33K([step2,step4]):    #白三三小目开局
+            #print(fname,"双小目对三三小目开局")
+            have_kk33k = True
+            kk33k += 1
+            if whowins == 'b':
+                bwin_kk33k += 1
+            continue
+        if is_K33([step2,step4]):    #白小目三三开局
+            #print(fname,"双小目对小目三三开局")
+            have_kkk33 = True
+            kkk33 += 1
+            if whowins == 'b':
+                bwin_kkk33 += 1
+            continue
+    elif is_S33([step1,step3]):  #黑星三三开局
+        #print('黑星小目开局')
+        if is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):    #白星小目或小目星开局
+            #print(fname,"星三三对星小目开局")
+            have_s33sk = True
+            s33sk += 1
+            if whowins == 'b':
+                bwin_s33sk += 1
+            continue
+        if is_sameSideStar([step2,step4]):  #白二连星开局
+            #print(fname,"星三三对二连星开局")
+            have_s33sss = True
+            s33sss += 1
+            if whowins == 'b':
+                bwin_s33sss += 1
+            continue
+        if is_diagonalStar([step2,step4]):   #白对角星
+            #print(fname,"星三三对对角星开局")
+            have_s33ds = True
+            s33ds += 1
+            if whowins == 'b':
+                bwin_s33ds += 1
+            continue
+        if is_KK([step2,step4]):    #白双小目开局
+            #print(fname,"星三三对双小目开局")
+            have_s33kk = True
+            s33kk += 1
+            if whowins == 'b':
+                bwin_s33kk += 1
+            continue
     elif is_S54([step1,step3]):  #黑星高目开局
         #print('黑星高目开局')
-        if is_starKomoku([step2,step4]):    #白星小目开局
+        if is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):    #白星小目或小目星开局
             #print(fname,"星高目对星小目开局")
             have_s54sk = True
             s54sk += 1
@@ -482,12 +527,12 @@ for fname in result:
             if whowins == 'b':
                 bwin_s54ds += 1
             continue
-        if is_komokuStar([step2,step4]):   #白小目星
-            #print(fname,"星高目对小目星开局")
-            have_s54ks = True
-            s54ks += 1
+        elif is_S33([step2,step4]):  #白星33开局
+            #print(fname,"星高目对星三三开局")
+            have_s54s33 = True
+            s54s33 += 1
             if whowins == 'b':
-                bwin_s54ks += 1
+                bwin_s54s33 += 1
             continue
     elif is_2starSansan([step1,step2,step3]):
         #print(fname,"星位后点三三开局")
@@ -503,43 +548,50 @@ for fname in result:
         if whowins == 'b':
             bwin_ks33 += 1
         continue
+    elif is_SKFly([step1,step2,step3]):
+        #print(fname,"星位小目后黑低挂开局")
+        have_skfly = True
+        skfly += 1
+        if whowins == 'b':
+            bwin_skfly += 1
+        continue
     print(fname,"未知开局")
 
-if have_dsds33: print('对角星点三三',dsds33,"黑胜率{:.2f}%".format(bwin_dsds33*1.0/dsds33*100),bwin_dsds33)
-if have_dsdsfly: print('对角星小飞挂',dsdsfly,"黑胜率{:.2f}%".format(bwin_dsdsfly*1.0/dsdsfly*100),bwin_dsdsfly)
-if have_dssk: print('对角星对星对角小目',dssk,"黑胜率{:.2f}%".format(bwin_dssk*1.0/dssk*100),bwin_dssk)
-if have_dsks: print('对角星对小目星',dsks,"黑胜率{:.2f}%".format(bwin_dsks*1.0/dsks*100),bwin_dsks)
-if have_dss33: print('对角星对星三三',dss33,"黑胜率{:.2f}%".format(bwin_dss33*1.0/dss33*100),bwin_dss33)
-if have_ds33s: print('对角星对三三星',ds33s,"黑胜率{:.2f}%".format(bwin_ds33s*1.0/ds33s*100),bwin_ds33s)
+if have_dsds33: print('对角星点三三',bwin_dsds33,dsds33,"黑胜率{:.2f}%".format(bwin_dsds33*1.0/dsds33*100))
+if have_dsdsfly: print('对角星小飞挂',bwin_dsdsfly,dsdsfly,"黑胜率{:.2f}%".format(bwin_dsdsfly*1.0/dsdsfly*100))
+if have_dssk: print('对角星对星对角小目',bwin_dssk,dssk,"黑胜率{:.2f}%".format(bwin_dssk*1.0/dssk*100))
+if have_dss33: print('对角星对星三三',bwin_dss33,dss33,"黑胜率{:.2f}%".format(bwin_dss33*1.0/dss33*100))
+if have_dskk: print('对角星对双小目',bwin_dskk,dskk,"黑胜率{:.2f}%".format(bwin_dskk*1.0/dskk*100))
 
-if have_ssssss33: print(u'二连星点三三',ssssss33,"黑胜率{:.2f}%".format(bwin_ssssss33*1.0/ssssss33*100),bwin_ssssss33)
-if have_ssssssfly: print(u'二连星小飞挂',ssssssfly,"黑胜率{:.2f}%".format(bwin_ssssssfly*1.0/ssssssfly*100),bwin_ssssssfly)
-if have_ssssk: print(u'二连星对星小目',ssssk,"黑胜率{:.2f}%".format(bwin_ssssk*1.0/ssssk*100),bwin_ssssk)
-if have_sssks: print(u'二连星对小目星',sssks,"黑胜率{:.2f}%".format(bwin_sssks*1.0/sssks*100),bwin_sssks)
-if have_ssskk: print(u'二连星对双小目',ssskk,"黑胜率{:.2f}%".format(bwin_ssskk*1.0/ssskk*100),bwin_ssskk)
+if have_ssssss33: print(u'二连星点三三',bwin_ssssss33,ssssss33,"黑胜率{:.2f}%".format(bwin_ssssss33*1.0/ssssss33*100))
+if have_ssssssfly: print(u'二连星小飞挂',bwin_ssssssfly,ssssssfly,"黑胜率{:.2f}%".format(bwin_ssssssfly*1.0/ssssssfly*100))
+if have_ssssk: print(u'二连星对星小目',bwin_ssssk,ssssk,"黑胜率{:.2f}%".format(bwin_ssssk*1.0/ssssk*100))
+if have_ssskk: print(u'二连星对双小目',bwin_ssskk,ssskk,"黑胜率{:.2f}%".format(bwin_ssskk*1.0/ssskk*100))
 
-if have_kssk: print('小目星对星小目',kssk,"黑胜率{:.2f}%".format(bwin_kssk*1.0/kssk*100),bwin_kssk)
-if have_kssss: print('小目星对二连星',kssss,"黑胜率{:.2f}%".format(bwin_kssss*1.0/kssss*100),bwin_kssss)
-if have_ksks: print('小目星对小目星',ksks,"黑胜率{:.2f}%".format(bwin_ksks*1.0/ksks*100),bwin_ksks)
-if have_kskk: print('小目星对双小目',kskk,"黑胜率{:.2f}%".format(bwin_kskk*1.0/kskk*100),bwin_kskk)
+if have_sksk: print('星小目对星小目',bwin_sksk,sksk,"黑胜率{:.2f}%".format(bwin_sksk*1.0/sksk*100))
+if have_sksss: print('星小目对二连星',bwin_sksss,sksss,"黑胜率{:.2f}%".format(bwin_sksss*1.0/sksss*100))
+if have_skds: print('星小目对对角星',bwin_skds,skds,"黑胜率{:.2f}%".format(bwin_skds*1.0/skds*100))
+if have_skkk: print('星小目对双小目',bwin_skkk,skkk,"黑胜率{:.2f}%".format(bwin_skkk*1.0/skkk*100))
 
-if have_sksk: print('星小目对星小目',sksk,"黑胜率{:.2f}%".format(bwin_sksk*1.0/sksk*100),bwin_sksk)
-if have_sksss: print('星小目对二连星',sksss,"黑胜率{:.2f}%".format(bwin_sksss*1.0/sksss*100),bwin_sksss)
-if have_skds: print('星小目对对角星',skds,"黑胜率{:.2f}%".format(bwin_skds*1.0/skds*100),bwin_skds)
-if have_skkk: print('星小目对双小目',skkk,"黑胜率{:.2f}%".format(bwin_skkk*1.0/skkk*100),bwin_skkk)
-if have_skks: print('星小目对小目星',skks,"黑胜率{:.2f}%".format(bwin_skks*1.0/skks*100),bwin_skks)
+if have_s33sk: print('星三三对星小目',bwin_s33sk,s33sk,"黑胜率{:.2f}%".format(bwin_s33sk*1.0/s33sk*100))
+if have_s33sss: print('星三三对二连星',bwin_s33sss,s33sss,"黑胜率{:.2f}%".format(bwin_s33sss*1.0/s33sss*100))
+if have_s33ds: print('星三三对对角星',bwin_s33ds,s33ds,"黑胜率{:.2f}%".format(bwin_s33ds*1.0/s33ds*100))
+if have_s33kk: print('星三三对双小目',bwin_s33kk,s33kk,"黑胜率{:.2f}%".format(bwin_s33kk*1.0/s33kk*100))
 
-if have_kksk: print('双小目对星小目',kksk,"黑胜率{:.2f}%".format(bwin_kksk*1.0/kksk*100),bwin_kksk)
-if have_kksss: print('双小目对二连星',kksss,"黑胜率{:.2f}%".format(bwin_kksss*1.0/kksss*100),bwin_kksss)
-if have_kkds: print('双小目对对角星',kkds,"黑胜率{:.2f}%".format(bwin_kkds*1.0/kkds*100),bwin_kkds)
-if have_kkkk: print('双小目对双小目',kkkk,"黑胜率{:.2f}%".format(bwin_kkkk*1.0/kkkk*100),bwin_kkkk)
+if have_kksk: print('双小目对星小目',bwin_kksk,kksk,"黑胜率{:.2f}%".format(bwin_kksk*1.0/kksk*100))
+if have_kksss: print('双小目对二连星',bwin_kksss,kksss,"黑胜率{:.2f}%".format(bwin_kksss*1.0/kksss*100))
+if have_kkds: print('双小目对对角星',bwin_kkds,kkds,"黑胜率{:.2f}%".format(bwin_kkds*1.0/kkds*100))
+if have_kkkk: print('双小目对双小目',bwin_kkkk,kkkk,"黑胜率{:.2f}%".format(bwin_kkkk*1.0/kkkk*100))
+if have_kk33k: print('双小目对三三小目',bwin_kk33k,kk33k,"黑胜率{:.2f}%".format(bwin_kk33k*1.0/kk33k*100))
+if have_kkk33: print('双小目对小目三三',bwin_kkk33,kkk33,"黑胜率{:.2f}%".format(bwin_kkk33*1.0/kkk33*100))
 
-if have_s54sk: print('星高目对星小目',s54sk,"黑胜率{:.2f}%".format(bwin_s54sk*1.0/s54sk*100),bwin_s54sk)
-if have_s54sss: print('星高目对二连星',s54sss,"黑胜率{:.2f}%".format(bwin_s54sss*1.0/s54sss*100),bwin_s54sss)
-if have_s54ds: print('星高目对对角星',s54ds,"黑胜率{:.2f}%".format(bwin_s54ds*1.0/s54ds*100),bwin_s54ds)
-if have_s54ks: print('星高目对小目星',s54ks,"黑胜率{:.2f}%".format(bwin_s54ks*1.0/s54ks*100),bwin_s54ks)
+if have_s54sk: print('星高目对星小目',bwin_s54sk,s54sk,"黑胜率{:.2f}%".format(bwin_s54sk*1.0/s54sk*100))
+if have_s54sss: print('星高目对二连星',bwin_s54sss,s54sss,"黑胜率{:.2f}%".format(bwin_s54sss*1.0/s54sss*100))
+if have_s54ds: print('星高目对对角星',bwin_s54ds,s54ds,"黑胜率{:.2f}%".format(bwin_s54ds*1.0/s54ds*100))
+if have_s54s33: print('星高目对星三三',bwin_s54s33,s54s33,"黑胜率{:.2f}%".format(bwin_s54s33*1.0/s54s33*100))
 
-if have_twoStar33: print(u'星位后点三三',twoStar33,"黑胜率{:.2f}%".format(bwin_twoStar33*1.0/twoStar33*100),bwin_twoStar33)
-if have_ks33: print(u'小目星位后点三三',ks33,"黑胜率{:.2f}%".format(bwin_ks33*1.0/ks33*100),bwin_ks33)
+if have_twoStar33: print(u'星位后点三三',bwin_twoStar33,twoStar33,"黑胜率{:.2f}%".format(bwin_twoStar33*1.0/twoStar33*100))
+if have_ks33: print(u'小目星位后点三三',bwin_ks33,ks33,"黑胜率{:.2f}%".format(bwin_ks33*1.0/ks33*100))
+if have_skfly: print(u'星位小目后黑低挂',bwin_skfly,skfly,"黑胜率{:.2f}%".format(bwin_skfly*1.0/skfly*100))
 
-if num>0:   print(bwin,"黑胜率{:.2f}%".format(bwin*1.0/num*100))
+if num>0:   print("黑胜局数",bwin,"总局数",num,"黑胜率{:.2f}%".format(bwin*1.0/num*100))
