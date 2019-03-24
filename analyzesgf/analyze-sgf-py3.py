@@ -289,7 +289,7 @@ for fname in result:
     sgf_src = sgffile.read()
     sgffile.close()
     try:
-        sgf_game = sgf.Sgf_game.from_string(sgf_src)
+        sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
     except ValueError:
         raise Exception("bad sgf file")
 
