@@ -475,7 +475,7 @@ for fname in result:
                 bwin_kkk33 += 1
             continue
     elif is_S33([step1,step3]):  #黑星三三开局
-        #print('黑星小目开局')
+        #print('黑星三三开局')
         if is_starKomoku([step2,step4]) or is_komokuStar([step2,step4]):    #白星小目或小目星开局
             #print(fname,"星三三对星小目开局")
             have_s33sk = True
