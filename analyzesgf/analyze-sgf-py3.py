@@ -318,7 +318,28 @@ for fname in result:
         print("读取棋谱信息出错")
         break
 
-    if is_diagonalStar([step1,step3]):  #黑对角星开局
+    if is_2starSansan([step1,step2,step3]): #星位后点三三
+        #print(fname,"星位后点三三开局")
+        have_twoStar33 = True
+        twoStar33 += 1
+        if whowins == 'b':
+            bwin_twoStar33 += 1
+        continue
+    elif is_KS33([step1,step2,step3]):  #小目星位后点三三
+        #print(fname,"小目星位后点三三开局")
+        have_ks33 = True
+        ks33 += 1
+        if whowins == 'b':
+            bwin_ks33 += 1
+        continue
+    elif is_SKFly([step1,step2,step3]): #星位小目后黑低挂
+        #print(fname,"星位小目后黑低挂开局")
+        have_skfly = True
+        skfly += 1
+        if whowins == 'b':
+            bwin_skfly += 1
+        continue
+    elif is_diagonalStar([step1,step3]):  #黑对角星开局
         #print('黑对角星开局')
         if is_diagonalStar([step2,step4]):   #白也是对角星
             (color5,stepmove5) = mainSequence[5].get_move()
@@ -534,27 +555,6 @@ for fname in result:
             if whowins == 'b':
                 bwin_s54s33 += 1
             continue
-    elif is_2starSansan([step1,step2,step3]):
-        #print(fname,"星位后点三三开局")
-        have_twoStar33 = True
-        twoStar33 += 1
-        if whowins == 'b':
-            bwin_twoStar33 += 1
-        continue
-    elif is_KS33([step1,step2,step3]):
-        #print(fname,"小目星位后点三三开局")
-        have_ks33 = True
-        ks33 += 1
-        if whowins == 'b':
-            bwin_ks33 += 1
-        continue
-    elif is_SKFly([step1,step2,step3]):
-        #print(fname,"星位小目后黑低挂开局")
-        have_skfly = True
-        skfly += 1
-        if whowins == 'b':
-            bwin_skfly += 1
-        continue
     print(fname,"未知开局")
 
 if have_dsds33: print('对角星点三三',bwin_dsds33,dsds33,"黑胜率{:.2f}%".format(bwin_dsds33*1.0/dsds33*100))
