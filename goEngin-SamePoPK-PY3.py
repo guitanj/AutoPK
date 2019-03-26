@@ -336,7 +336,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
         stepTime2 = datetime.datetime.now()
         print(steps,cmdStr,'WinRate:(',stepWinrate,'%)(po:',povalue,')', \
               "{:.2f}".format((stepTime2-stepTime1).total_seconds()),'s', \
-              "{:.2f}".format((errQTime2-errQTime1).total_seconds()),'s')
+              "{:.2f}".format((errQTime2-errQTime1).total_seconds()),'s')   #python3
         steps += 1
         gotAns = pw.readAns()
         #print 'White answer is :', gotAns
@@ -430,8 +430,8 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
 
     print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s')
     #print sgfStr
-    sgffile = open(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')
-    sgffile.write(g.serialise().decode())
+    sgffile = open(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')   #python3
+    sgffile.write(g.serialise().decode())   #python3
     sgffile.close()        
     pb.close()
     pw.close()
@@ -464,7 +464,7 @@ if __name__ == "__main__":
             
             #每一局结束保存临时结果到~autopk_temp.txt文件中,防止意外退出
             t1 = datetime.datetime.now()
-            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')
+            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')   #python3
             tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                           t1.strftime('%b-%d-%y %H:%M:%S')+ \
                           '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
@@ -472,7 +472,7 @@ if __name__ == "__main__":
             tempfile.close()
 
         t1 = datetime.datetime.now()
-        resfile = open('PKResult.txt','a',encoding='utf-8')
+        resfile = open('PKResult.txt','a',encoding='utf-8')   #python3
         resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
                       '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
