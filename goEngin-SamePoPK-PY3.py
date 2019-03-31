@@ -7,10 +7,10 @@ import os,sys
 import subprocess
 from subprocess import Popen, PIPE
 from threading import Thread
-from queue import Queue, Empty
+from queue import Queue, Empty   #python3
 from time import sleep
-from sgfmill import sgf
-from tkinter import *
+from sgfmill import sgf   #python3
+from tkinter import *   #python3
 import datetime
 
 a2n = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'J':8,'K':9,'L':10,'M':11,'N':12,'O':13,'P':14,'Q':15,'R':16,'S':17,'T':18}
