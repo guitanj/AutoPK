@@ -438,11 +438,11 @@ def startPK(num,weightb,weightw,spendTime):
 
     #计算黑白平均po值
     if steps % 2 == 0:  #偶数说明是白投降了
-        avgBlackPo = black_po/(steps/2)
-        avgWhitePo = white_po/(steps/2-1)
+        avgBlackPo = int(black_po/(steps/2))
+        avgWhitePo = int(white_po/(steps/2-1))
     else:
-        avgBlackPo = black_po/((steps-1)/2)
-        avgWhitePo = white_po/((steps-1)/2)
+        avgBlackPo = int(black_po/((steps-1)/2))
+        avgWhitePo = int(white_po/((steps-1)/2))
 
     print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s','avgBpo:',avgBlackPo,'avgWpo:',avgWhitePo)
     #print sgfStr
