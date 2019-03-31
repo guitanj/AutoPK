@@ -446,8 +446,9 @@ def startPK(num,weightb,weightw,spendTime):
 
     print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s','avgBpo:',avgBlackPo,'avgWpo:',avgWhitePo)
     #print sgfStr
-    sgffile = open(weightb+' B'+"{:.0f}".format(avgBlackPo)+'po vs '+weightw+' W'+"{:.0f}".format(avgWhitePo)+'po-'+str(spendTime)+'s-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')
-    sgffile.write(g.serialise().decode())
+    sgffile = open(weightb+' B'+"{:.0f}".format(avgBlackPo)+'po vs '+weightw+' W'+"{:.0f}".format(avgWhitePo)+ \
+                   'po-'+str(spendTime)+'s-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')    #python 3
+    sgffile.write(g.serialise().decode())   #python 3
     sgffile.close()        
     pb.close()
     pw.close()
@@ -479,7 +480,7 @@ if __name__ == "__main__":
             
             #每一局结束保存临时结果到~autopk_temp.txt文件中,防止意外退出
             t1 = datetime.datetime.now()
-            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')
+            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')    #python 3
             tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                           t1.strftime('%b-%d-%y %H:%M:%S')+ \
                           '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
@@ -487,7 +488,7 @@ if __name__ == "__main__":
             tempfile.close()
             
         t1 = datetime.datetime.now()
-        resfile = open('PKResult.txt','a',encoding='utf-8')
+        resfile = open('PKResult.txt','a',encoding='utf-8')    #python 3
         resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
                       '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
