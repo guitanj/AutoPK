@@ -1,6 +1,6 @@
 # Curves
 ![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/curves/40b-elo-playoutsCurve-updateTo215.jpg "Screen-shot of 40b-elo-playouts Curves")
-![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/15b-elo-playoutsCurve-update157-990.jpg "Screen-shot of 15b-elo-playouts Curves")
+![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/curves/15b-elo-playoutsCurve-update157-990.jpg "Screen-shot of 15b-elo-playouts Curves")
 ![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/elo/playoutsVSEloList-update215.jpg "playouts vs elo list")
 
 # AutoPK
