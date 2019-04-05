@@ -176,23 +176,40 @@ def a2num(s):
         return (a2n[s[0].upper()],int(s[1:])-1)
 
 #取得下一手相关信息：落子点、胜率、后几步走法、playouts
-def getStepInfo(infotxt):
+def getStepInfo(infotxt,gotAns):
     iLines = infotxt.split('\r\n')
-    step,winrate,mightMoves,povalue = None,None,None,None
-    for eachline in iLines:     # G14 ->       2 (V: 92.34%) (N:  9.63%) PV: G14 H14
+    step,winrate,lcbrate,mightMoves,povalue = None,None,None,None,None
+    # Old:    G14 ->       2 (V: 92.34%) (N:  9.63%) PV: G14 H14
+    # LZ0.17: D17 ->     102 (V: 45.56%) (LCB: 42.97%) (N:  5.52%) PV: D17 R17 D4 Q3 D14 Q5 C6 C12 K3\r\n
+    for eachline in iLines:
         #print eachline
-        if eachline.startswith(' ') and eachline.count('%')==2:
-            step = eachline[1:eachline.find(' ->')]
-            winrate = eachline[eachline.find('V:')+3:eachline.find('%')]
-            mightMoves = eachline[eachline.find('PV:')+4:]
-            #print step,winrate,mightMoves
-            break
+        if eachline.startswith(' ') and eachline.count('%')>=2:
+            step = eachline[1:eachline.find(' ->')].strip()
+            steplist = eachline.split(')')
+            # D17 ->     102 (V: 45.56%
+            # (LCB: 42.97%
+            # (N:  5.52%
+            # PV: D17 R17 D4 Q3 D14 Q5 C6 C12 K3
+            for i in range(len(steplist)):
+                if steplist[i].find('V:') != -1 and winrate is None:
+                    winrate = steplist[i][steplist[i].find('V:')+3:steplist[i].find('%')]
+                if steplist[i].find('LCB:') != -1:
+                    lcbrate = steplist[i][steplist[i].find('LCB:')+5:steplist[i].find('%')]
+                if steplist[i].find('PV:') != -1:
+                    mightMoves = steplist[i][steplist[i].find('PV:')+4:-2]
+            if step == gotAns:
+                print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
+                break
+            else:
+                print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
+                step,winrate,lcbrate,mightMoves = None,None,None,None
+                continue
     for eachline in iLines:     #4 visits, 1056 nodes, 3 playouts, 3 n/s
         if eachline.count('visits')==1 and eachline.count('playouts')==1:
             povalue = eachline[eachline.find('nodes,')+7:eachline.find('playouts')-1]
             #print povalue
             break
-    return step,winrate,mightMoves,povalue
+    return step,winrate,lcbrate,mightMoves,povalue
 
 def startPK(num,playoutb,playoutw,weightb,weightw):
     g = sgf.Sgf_game(size=19)
@@ -317,7 +334,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
     errQTime1 = datetime.datetime.now() #记录读取errQ的时长
     strInfo = pb.clearErrQ()
     errQTime2 = datetime.datetime.now() #记录读取errQ的时长
-    firstStep,stepWinrate,mightMoves,povalue = getStepInfo(strInfo)
+    firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
     if stepWinrate == None or povalue == None:
         print repr(strInfo)
 
@@ -348,7 +365,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
         errQTime1 = datetime.datetime.now() #记录读取errQ的时长
         strInfo = pw.clearErrQ()
         errQTime2 = datetime.datetime.now() #记录读取errQ的时长
-        firstStep,stepWinrate,mightMoves,povalue = getStepInfo(strInfo)
+        firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
         if stepWinrate == None or povalue == None:
             print repr(strInfo)
             
@@ -391,7 +408,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
         errQTime1 = datetime.datetime.now() #记录读取errQ的时长
         strInfo = pb.clearErrQ()
         errQTime2 = datetime.datetime.now() #记录读取errQ的时长
-        firstStep,stepWinrate,mightMoves,povalue = getStepInfo(strInfo)
+        firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
         if stepWinrate == None or povalue == None:
             print repr(strInfo)
             
