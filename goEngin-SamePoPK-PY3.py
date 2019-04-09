@@ -198,7 +198,7 @@ def getStepInfo(infotxt,gotAns):
                 if steplist[i].find('PV:') != -1:
                     mightMoves = steplist[i][steplist[i].find('PV:')+4:-2]
             if step == gotAns:
-                print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
+                #print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
                 break
             else:
                 print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
@@ -343,8 +343,10 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
     node = g.extend_main_sequence()
     node.set_move('b', a2num(sgfStr))
     if stepWinrate!=None and povalue!=None:
-        node.set("C",stepWinrate+'% po:'+povalue)
-
+        if lcbrate!=None:
+            node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+        else:
+            node.set("C",stepWinrate+'% po:'+povalue)
     steps = 1
     whowins = ''
 
@@ -380,7 +382,10 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
             node = g.extend_main_sequence()
             node.set_move('w', a2num(gotAns[2:-2]))
             if stepWinrate!=None and povalue!=None:
-                node.set("C",stepWinrate+'% po:'+povalue)
+                if lcbrate!=None:
+                    node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+                else:
+                    node.set("C",stepWinrate+'% po:'+povalue)
             cmdStr = 'play w ' + gotAns[2:-2]
         else:
             print('White resigned!')
@@ -424,7 +429,10 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
             node = g.extend_main_sequence()
             node.set_move('b', a2num(gotAns[2:-2]))
             if stepWinrate!=None and povalue!=None:
-                node.set("C",stepWinrate+'% po:'+povalue)
+                if lcbrate!=None:
+                    node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+                else:
+                    node.set("C",stepWinrate+'% po:'+povalue)
             cmdStr = 'play b ' + gotAns[2:-2]
         else:
             print('Black resigned!')
