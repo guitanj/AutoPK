@@ -349,7 +349,10 @@ def startPK(num,weightb,weightw,spendTime):
     node = g.extend_main_sequence()
     node.set_move('b', a2num(sgfStr))
     if stepWinrate!=None and povalue!=None:
-        node.set("C",stepWinrate+'% po:'+povalue)
+        if lcbrate!=None:
+            node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+        else:
+            node.set("C",stepWinrate+'% po:'+povalue)
         black_po += int(povalue)
 
     steps = 1
@@ -386,7 +389,10 @@ def startPK(num,weightb,weightw,spendTime):
             node = g.extend_main_sequence()
             node.set_move('w', a2num(gotAns[2:-2]))
             if stepWinrate!=None and povalue!=None:
-                node.set("C",stepWinrate+'% po:'+povalue)
+                if lcbrate!=None:
+                    node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+                else:
+                    node.set("C",stepWinrate+'% po:'+povalue)
                 white_po += int(povalue)
             cmdStr = 'play w ' + gotAns[2:-2]
         else:
@@ -430,7 +436,10 @@ def startPK(num,weightb,weightw,spendTime):
             node = g.extend_main_sequence()
             node.set_move('b', a2num(gotAns[2:-2]))
             if stepWinrate!=None and povalue!=None:
-                node.set("C",stepWinrate+'% po:'+povalue)
+                if lcbrate!=None:
+                    node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
+                else:
+                    node.set("C",stepWinrate+'% po:'+povalue)
                 black_po += int(povalue)
             cmdStr = 'play b ' + gotAns[2:-2]
         else:
