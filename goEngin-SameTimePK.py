@@ -198,10 +198,11 @@ def getStepInfo(infotxt,gotAns):
                 if steplist[i].find('PV:') != -1:
                     mightMoves = steplist[i][steplist[i].find('PV:')+4:-2]
             if step == gotAns:
-                print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
+                #print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
                 break
             else:
-                print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
+                if gotAns!='resign':
+                    print(step,winrate,lcbrate,mightMoves,'gotAns:',gotAns,step == gotAns)
                 step,winrate,lcbrate,mightMoves = None,None,None,None
                 continue
     for eachline in iLines:     #4 visits, 1056 nodes, 3 playouts, 3 n/s
@@ -341,7 +342,7 @@ def startPK(num,weightb,weightw,spendTime):
     strInfo = pb.clearErrQ()
     errQTime2 = datetime.datetime.now() #记录读取errQ的时长
     firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
-    if stepWinrate == None or povalue == None:
+    if (stepWinrate == None or povalue == None) and gotAns[2:-2]!='resign':
         print repr(strInfo)
 
     cmdStr = 'play b ' + gotAns[2:-2]
@@ -361,7 +362,7 @@ def startPK(num,weightb,weightw,spendTime):
     while not resigned:
         pw.write(cmdStr)
         stepTime2 = datetime.datetime.now()
-        print steps,cmdStr,'WinRate:(',stepWinrate,'%)(po:',povalue,')', \
+        print steps,cmdStr,'WinRate:(',stepWinrate,'%)(lcb:',lcbrate,'%)(po:',povalue,')', \
               (stepTime2-stepTime1).total_seconds(),'s',(errQTime2-errQTime1).total_seconds(),'s'
         steps += 1
         gotAns = pw.readAns()
@@ -376,7 +377,7 @@ def startPK(num,weightb,weightw,spendTime):
         strInfo = pw.clearErrQ()
         errQTime2 = datetime.datetime.now() #记录读取errQ的时长
         firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
-        if stepWinrate == None or povalue == None:
+        if (stepWinrate == None or povalue == None) and gotAns[2:-2]!='resign':
             print repr(strInfo)
             
         if gotAns[2:] == u'pass\r\n':
@@ -408,7 +409,7 @@ def startPK(num,weightb,weightw,spendTime):
 
         pb.write(cmdStr)
         stepTime1 = datetime.datetime.now()
-        print steps,cmdStr,'WinRate:(',stepWinrate,'%)(po:',povalue,')', \
+        print steps,cmdStr,'WinRate:(',stepWinrate,'%)(lcb:',lcbrate,'%)(po:',povalue,')', \
               (stepTime1-stepTime2).total_seconds(),'s',(errQTime2-errQTime1).total_seconds(),'s'
         steps += 1
         gotAns = pb.readAns()
@@ -423,7 +424,7 @@ def startPK(num,weightb,weightw,spendTime):
         strInfo = pb.clearErrQ()
         errQTime2 = datetime.datetime.now() #记录读取errQ的时长
         firstStep,stepWinrate,lcbrate,mightMoves,povalue = getStepInfo(strInfo,gotAns[2:-2])
-        if stepWinrate == None or povalue == None:
+        if (stepWinrate == None or povalue == None) and gotAns[2:-2]!='resign':
             print repr(strInfo)
             
         if gotAns[2:] == u'pass\r\n':
