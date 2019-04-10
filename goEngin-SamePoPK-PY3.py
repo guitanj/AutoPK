@@ -354,7 +354,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
     while not resigned:
         pw.write(cmdStr)
         stepTime2 = datetime.datetime.now()
-        print(steps,cmdStr,'WinRate:(',stepWinrate,'%)(po:',povalue,')', \
+        print(steps,cmdStr,'WinRate:(',stepWinrate,'%)(lcb:',lcbrate,'%)(po:',povalue,')', \
               "{:.2f}".format((stepTime2-stepTime1).total_seconds()),'s', \
               "{:.2f}".format((errQTime2-errQTime1).total_seconds()),'s')   #python3
         steps += 1
@@ -401,7 +401,7 @@ def startPK(num,playoutb,playoutw,weightb,weightw):
 
         pb.write(cmdStr)
         stepTime1 = datetime.datetime.now()
-        print(steps,cmdStr,'WinRate:(',stepWinrate,'%)(po:',povalue,')', \
+        print(steps,cmdStr,'WinRate:(',stepWinrate,'%)(lcb:',lcbrate,'%)(po:',povalue,')', \
               "{:.2f}".format((stepTime1-stepTime2).total_seconds()),'s', \
               "{:.2f}".format((errQTime2-errQTime1).total_seconds()),'s')
         steps += 1
