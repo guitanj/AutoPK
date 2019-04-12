@@ -215,11 +215,11 @@ def getStepInfo(infotxt,gotAns):
             break
     return step,winrate,lcbrate,mightMoves,povalue
 
-def startPK(num,spendTime):
+def startPK(num,playoutb,playoutw):
     pbscmd = autopk_config.get("engines", "blackdir") \
              +autopk_config.get("engines", "blackengine")+' -w' \
              +autopk_config.get("engines", "blackweightdir") \
-             +autopk_config.get("engines", "blackweight")+' -p 9990000'
+             +autopk_config.get("engines", "blackweight")+' -p '+str(playoutb)
     pbscmd = pbscmd.replace('\\','\\\\')
     pbcwdstr = autopk_config.get("engines", "blackdir")
     pbcwdstr = pbcwdstr.replace('\\','\\\\')
@@ -264,7 +264,7 @@ def startPK(num,spendTime):
     pwscmd = autopk_config.get("engines", "whitedir") \
              +autopk_config.get("engines", "whiteengine")+' -w' \
              +autopk_config.get("engines", "whiteweightdir") \
-             +autopk_config.get("engines", "whiteweight")+' -p 9990000'
+             +autopk_config.get("engines", "whiteweight")+' -p '+str(playoutw)
     pwscmd = pwscmd.replace('\\','\\\\')
     pwcwdstr = autopk_config.get("engines", "whitedir")
     pwcwdstr = pwcwdstr.replace('\\','\\\\')
@@ -314,10 +314,10 @@ def startPK(num,spendTime):
                     return None
                 gotErrStr = pw.readErr_nowait()
 
-    initCmds = ['version','boardsize 19','komi 7.5','time_settings 0 '+str(spendTime+1)+' 1']
+    initCmds = ['version','boardsize 19','komi 7.5','time_settings 0 9999 1']
 
     for cmd in initCmds:
-        print('Sending pb[',cmd,']',end=' ')
+        print('Sending pb[',cmd,']', end=' ')
         try:
             pb.write(cmd)
         except (Exception) as e:
@@ -329,11 +329,7 @@ def startPK(num,spendTime):
 
     for cmd in initCmds:
         print('Sending pw[',cmd,']',end=' ')
-        try:
-            pw.write(cmd)
-        except (Exception) as e:
-            print("Error found:",e)
-            return None            
+        pw.write(cmd)
         gotAns = pw.readAns()
         print('pw Answer is :', gotAns[:-2])
         pw.clearErrQ()
@@ -342,8 +338,6 @@ def startPK(num,spendTime):
     stepTime1 = datetime.datetime.now()
     startTime = stepTime1
     resigned = False
-    black_po = 0    #黑棋po总值
-    white_po = 0    #白棋po总值
     cmdStr = 'genmove b'
     pb.write(cmdStr)
     gotAns = pb.readAns()
@@ -366,7 +360,6 @@ def startPK(num,spendTime):
             node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
         else:
             node.set("C",stepWinrate+'% po:'+povalue)
-        black_po += int(povalue)
 
     steps = 1
     whowins = ''
@@ -407,7 +400,6 @@ def startPK(num,spendTime):
                     node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
                 else:
                     node.set("C",stepWinrate+'% po:'+povalue)
-                white_po += int(povalue)
             cmdStr = 'play w ' + gotAns[2:-2]
         else:
             print('White resigned!')
@@ -455,7 +447,6 @@ def startPK(num,spendTime):
                     node.set("C",stepWinrate+'% lcb:'+lcbrate+'% po:'+povalue)
                 else:
                     node.set("C",stepWinrate+'% po:'+povalue)
-                black_po += int(povalue)
             cmdStr = 'play b ' + gotAns[2:-2]
         else:
             print('Black resigned!')
@@ -476,18 +467,9 @@ def startPK(num,spendTime):
             endTime = datetime.datetime.now()
             continue            
 
-    #计算黑白平均po值
-    if steps % 2 == 0:  #偶数说明是白投降了
-        avgBlackPo = int(black_po/(steps/2))
-        avgWhitePo = int(white_po/(steps/2-1))
-    else:
-        avgBlackPo = int(black_po/((steps-1)/2))
-        avgWhitePo = int(white_po/((steps-1)/2))
-
-    print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s','avgBpo:',avgBlackPo,'avgWpo:',avgWhitePo)
+    print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s')
     #print sgfStr
-    sgffile = open(weightb+' B'+"{:.0f}".format(avgBlackPo)+'po vs '+weightw+' W'+"{:.0f}".format(avgWhitePo)+ \
-                'po-'+str(spendTime)+'s-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8') #python 3
+    sgffile = open(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')
     sgffile.write(g.serialise().decode())
     sgffile.close()        
     pb.close()
@@ -495,16 +477,16 @@ def startPK(num,spendTime):
     return whowins
 
 _description = """\
-autoPK-SameTime V3.1 2019.4.13 written by Alan@NJ email:71245246@qq.com.------
-Modify config-ST.ini file,then wait and find the result in PKResult-ST.txt.---
-You can use Ctrl+C to interrupt running,and you can get temporary result in ~autopk-ST_temp.txt
+autoPK V3.1 2019.4.13 written by Alan@NJ email:71245246@qq.com.---------------
+Modify config.ini file,then wait and find the result in PKResult.txt.---------
+You can use Ctrl+C to interrupt running,and you can get temporary result in ~autopk_temp.txt
 """
 
 def module_path():
     return os.path.dirname(__file__)
 
 pathname=module_path()
-config_file=os.path.join(os.path.abspath(pathname),"config-ST.ini")
+config_file=os.path.join(os.path.abspath(pathname),"config.ini")
 
 class MyConfig():
     def __init__(self, config_file):
@@ -626,36 +608,43 @@ if __name__ == "__main__":
     weightw = autopk_config.get("engines", "whiteweight")
     pkstopno = autopk_config.getint("howtofight", "pkstopno")
     pkstartno = autopk_config.getint("howtofight", "pkstartno")
-    spendTime = autopk_config.getint("howtofight", "spendtime")
-    
-    t0 = datetime.datetime.now()
-    blackW = 0
-    whiteW = 0
-    for i in range(pkstartno,pkstopno+1):
-        whoWin = startPK(i,spendTime)
-        if whoWin == 'b':
-            blackW += 1
-        elif whoWin == 'w':
-            whiteW += 1
-        elif whoWin == 'x':
-            print('Too many moves Found:', whoWin)
-        else:
-            print('Error Found:', whoWin)
-        print(weightb+' B vs '+weightw+' W'+str(spendTime)+'s', blackW,':', whiteW)
+    strpk = autopk_config.get("howtofight", "pkpolist")
+    spklist = strpk.split(';')
+    pklist = []
+    for i in spklist:
+        templist=[]
+        for j in i.split(','):
+            templist.append(int(j))
+        pklist.append(templist)
+    for (playoutb,playoutw) in pklist:
+        t0 = datetime.datetime.now()
+        blackW = 0
+        whiteW = 0
+        for i in range(pkstartno,pkstopno+1):
+            whoWin = startPK(i,playoutb,playoutw)
+            if whoWin == 'b':
+                blackW += 1
+            elif whoWin == 'w':
+                whiteW += 1
+            elif whoWin == 'x':
+                print('Too many moves Found:', whoWin)
+            else:
+                print('Error Found:', whoWin)
+            print(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po', blackW,':', whiteW)
 
-        #每一局结束保存临时结果到~autopk-ST_temp.txt文件中,防止意外退出
+            #每一局结束保存临时结果到~autopk_temp.txt文件中,防止意外退出
+            t1 = datetime.datetime.now()
+            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')
+            tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+                      t1.strftime('%b-%d-%y %H:%M:%S')+ \
+                      '. Spend '+str((t1-t0).total_seconds())+'s\n')
+            tempfile.write(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po '+str(blackW)+":"+str(whiteW)+'\n')
+            tempfile.close()
+
         t1 = datetime.datetime.now()
-        tempfile = open('~autopk-ST_temp.txt','w',encoding='utf-8')
-        tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+        resfile = open('PKResult.txt','a',encoding='utf-8')
+        resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
                       '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
-        tempfile.write(weightb+' B-t1b1 vs '+weightw+' W-t2b8'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
-        tempfile.close()
-
-    t1 = datetime.datetime.now()
-    resfile = open('PKResult-ST.txt','a',encoding='utf-8')
-    resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
-                  t1.strftime('%b-%d-%y %H:%M:%S')+ \
-                  '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
-    resfile.write(weightb+' B vs '+weightw+' W'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
-    resfile.close()
+        resfile.write(weightb+' B-'+str(playoutb)+'po vs '+weightw+' W-'+str(playoutw)+'po '+str(blackW)+":"+str(whiteW)+'\n')
+        resfile.close()
