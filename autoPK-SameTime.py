@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # AutoPK version 1.0 20181122 by Alan@NJ
 # version 2.3 20190203 upload to github
+# version 3.0 20190224 update to python 3.7.2 version
+# version 3.1 20190413 update to config mode
 
 import os,sys
 import subprocess
@@ -11,6 +13,8 @@ from time import sleep
 from sgfmill import sgf
 from tkinter import *
 import datetime
+import configparser
+from optparse import OptionParser
 
 a2n = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'J':8,'K':9,'L':10,'M':11,'N':12,'O':13,'P':14,'Q':15,'R':16,'S':17,'T':18}
 
@@ -68,7 +72,7 @@ class goEngin():
     #向围棋AI写入GTP指令
     def write(self,txt):
         try:
-            self.process.stdin.write((txt+"\r\n").encode()) #python 3 encode()
+            self.process.stdin.write((txt+"\r\n").encode())
             #print txt
             self.process.stdin.flush()
         except (Exception) as e:
@@ -211,17 +215,15 @@ def getStepInfo(infotxt,gotAns):
             break
     return step,winrate,lcbrate,mightMoves,povalue
 
-def startPK(num,weightb,weightw,spendTime):
-    g = sgf.Sgf_game(size=19)
-    g.root.set("KM",'7.5')
-    g.root.set("PB",weightb)
-    g.root.set("PW",weightw)
-    
-    #pbscmd = 'D:\\Go\\leela-zero-0.16-win64\\leelaz.exe -g --noponder -t 2 -wD:\\Go\\weights\\' \
-    pbscmd = 'C:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder --precision half -wC:\\Go\\weight\\' \
-             +weightb+' --gpu 1 -p 100000'
-    pbcwdstr = 'C:\\Go\\1130fastexit-tensor-accum'
-    #print pbscmd
+def startPK(num,spendTime):
+    pbscmd = autopk_config.get("engines", "blackdir") \
+             +autopk_config.get("engines", "blackengine")+' -w' \
+             +autopk_config.get("engines", "blackweightdir") \
+             +autopk_config.get("engines", "blackweight")+' -p 9990000'
+    pbscmd = pbscmd.replace('\\','\\\\')
+    pbcwdstr = autopk_config.get("engines", "blackdir")
+    pbcwdstr = pbcwdstr.replace('\\','\\\\')
+    #print(pbscmd,pbcwdstr)
     pbcommand = pbscmd.split(' ')
     try:
         pb = goEngin(pbcommand, pbcwdstr)
@@ -239,7 +241,7 @@ def startPK(num,weightb,weightw,spendTime):
             while gotStdStr != None:
                 print(gotStdStr)
                 gotStdStr = pb.readAns_nowait()
-            print("process start failed.")
+            print("process start failed")
             return None
         sleep(0.001)
         gotErrStr = pb.readErr_nowait()
@@ -255,15 +257,18 @@ def startPK(num,weightb,weightw,spendTime):
                 if pb.process.poll() is None:
                     pass
                 else:
-                    print("process start failed.")
+                    print("process start failed")
                     return None
                 gotErrStr = pb.readErr_nowait()
 
-    #pwscmd = 'D:\\Go\\leela-zero-0.16-win64\\leelaz.exe -g --noponder -t 2 -wD:\\Go\\weights\\' \
-    pwscmd = 'C:\\Go\\1130fastexit-tensor-accum\\leelaz.exe -g --noponder -t 1 --precision half --batchsize 4 -wC:\\Go\\weight\\' \
-             +weightw+' --gpu 1 -p 100000'
-    pwcwdstr = 'C:\\Go\\1130fastexit-tensor-accum'
-    #print pwscmd
+    pwscmd = autopk_config.get("engines", "whitedir") \
+             +autopk_config.get("engines", "whiteengine")+' -w' \
+             +autopk_config.get("engines", "whiteweightdir") \
+             +autopk_config.get("engines", "whiteweight")+' -p 9990000'
+    pwscmd = pwscmd.replace('\\','\\\\')
+    pwcwdstr = autopk_config.get("engines", "whitedir")
+    pwcwdstr = pwcwdstr.replace('\\','\\\\')
+    #print(pwscmd,pwcwdstr)
     pwcommand = pwscmd.split(' ')
     try:
         pw = goEngin(pwcommand, pwcwdstr)
@@ -271,6 +276,14 @@ def startPK(num,weightb,weightw,spendTime):
         print("Error found:",e)
         return None
 
+    #初始化待存储棋谱
+    weightb = autopk_config.get("engines", "blackweight")
+    weightw = autopk_config.get("engines", "whiteweight")
+    g = sgf.Sgf_game(size=19)
+    g.root.set("KM",'7.5')
+    g.root.set("PB",weightb)
+    g.root.set("PW",weightw)
+    
     processTest = True
     while processTest:
         #print 'test pw alive',pw.process.poll()
@@ -281,7 +294,7 @@ def startPK(num,weightb,weightw,spendTime):
             while gotStdStr != None:
                 print(gotStdStr)
                 gotStdStr = pw.readAns_nowait()
-            print("process start failed.")
+            print("process start failed")
             return None
         sleep(0.001)
         gotErrStr = pw.readErr_nowait()
@@ -297,14 +310,14 @@ def startPK(num,weightb,weightw,spendTime):
                 if pw.process.poll() is None:
                     pass
                 else:
-                    print("process start failed.")
+                    print("process start failed")
                     return None
                 gotErrStr = pw.readErr_nowait()
 
     initCmds = ['version','boardsize 19','komi 7.5','time_settings 0 '+str(spendTime+1)+' 1']
 
     for cmd in initCmds:
-        print('Sending pb[', cmd,']', end=' ')
+        print('Sending pb[',cmd,']',end=' ')
         try:
             pb.write(cmd)
         except (Exception) as e:
@@ -315,7 +328,7 @@ def startPK(num,weightb,weightw,spendTime):
         pb.clearErrQ()
 
     for cmd in initCmds:
-        print('Sending pw[', cmd,']', end=' ')
+        print('Sending pw[',cmd,']',end=' ')
         try:
             pw.write(cmd)
         except (Exception) as e:
@@ -474,53 +487,175 @@ def startPK(num,weightb,weightw,spendTime):
     print('本局共耗时：',"{:.2f}".format((endTime-startTime).total_seconds()),'s','avgBpo:',avgBlackPo,'avgWpo:',avgWhitePo)
     #print sgfStr
     sgffile = open(weightb+' B'+"{:.0f}".format(avgBlackPo)+'po vs '+weightw+' W'+"{:.0f}".format(avgWhitePo)+ \
-                   'po-'+str(spendTime)+'s-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8')    #python 3
-    sgffile.write(g.serialise().decode())   #python 3
+                'po-'+str(spendTime)+'s-'+str(num)+'-'+whowins+'+.sgf','w',encoding='utf-8') #python 3
+    sgffile.write(g.serialise().decode())
     sgffile.close()        
     pb.close()
     pw.close()
     return whowins
 
-if __name__ == "__main__":
+_description = """\
+autoPK-SameTime V3.1 2019.4.13 written by Alan@NJ email:71245246@qq.com.------
+Modify config-ST.ini file,then wait and find the result in PKResult-ST.txt.---
+You can use Ctrl+C to interrupt running,and you can get temporary result in ~autopk-ST_temp.txt
+"""
 
-    spendTime = 1 #可修改：设定pk时间
-    weightb='elfv1' #可修改：执黑权重
-    weightw='elfv1' #可修改：执白权重
-    while spendTime <= 1: #可修改：设定pk上限时间
-        t0 = datetime.datetime.now()
-        blackW = 0
-        whiteW = 0
-        for i in range(100): #可修改：每一轮测试的对局数
-            try:
-                whoWin = startPK(i,weightb,weightw,spendTime)
-            except KeyboardInterrupt:
-                break
-            if whoWin == 'b':
-                blackW += 1
-            elif whoWin == 'w':
-                whiteW += 1
-            elif whoWin == 'x':
-                print('Too many moves Found:', whoWin)
-            else:
-                print('Error Found:', whoWin)
-            print(weightb+' B vs '+weightw+' W'+str(spendTime)+'s', blackW,':', whiteW)
-            
-            #每一局结束保存临时结果到~autopk_temp.txt文件中,防止意外退出
-            t1 = datetime.datetime.now()
-            tempfile = open('~autopk_temp.txt','w',encoding='utf-8')    #python 3
-            tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
-                          t1.strftime('%b-%d-%y %H:%M:%S')+ \
-                          '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
-            tempfile.write(weightb+' B vs '+weightw+' W'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
-            tempfile.close()
-            
+def module_path():
+    return os.path.dirname(__file__)
+
+pathname=module_path()
+config_file=os.path.join(os.path.abspath(pathname),"config-ST.ini")
+
+class MyConfig():
+    def __init__(self, config_file):
+        self.config = configparser.ConfigParser()
+        self.config.read(config_file)
+        self.config_file=config_file
+        
+        self.default_values={}
+        self.default_values["engines"]={}
+        self.default_values["engines"]["blackdir"]=""
+        self.default_values["engines"]["blackengine"]=""
+        self.default_values["engines"]["blackweightdir"]=""
+        self.default_values["engines"]["blackweight"]=""
+        self.default_values["engines"]["whitedir"]=""
+        self.default_values["engines"]["whiteengine"]=""
+        self.default_values["engines"]["whiteweightdir"]=""
+        self.default_values["engines"]["whiteweight"]=""
+        
+        self.default_values["howtofight"]={}
+        self.default_values["howtofight"]["pkpolist"]="[800,800]"
+        self.default_values["howtofight"]["pkstopno"]="99"
+        self.default_values["howtofight"]["pkstartno"]="0"
+        
+        self.default_values["gui"]={}
+        self.default_values["howtofight"]["gobanratio"]="0.55"
+        
+    def set(self, section, key, value):
+        if type(value) in (type(1), type(0.5), type(True)):
+            value=value
+        if type(section)!=type(u"abc"):
+            print(section, "Warning: A non utf section string sent to my config:",section)
+        if type(key)!=type(u"abc"):
+            print(key,"A non utf key string sent to my config:", key)
+        if type(value)!=type(u"abc"):
+            print(section,key,value,"A non utf value string sent to my config:",value)
+        section=section
+        key=key
+        value=value
+        self.config.set(str(section),str(key),str(value))
+        #self.config.write(open(self.config_file,"w"))
+    
+    def get(self,section,key):
+        try:
+            value=self.config.get(section,key)
+        except:
+            print("Could not read",str(section)+"/"+str(key),"from the config file")
+            print("Using default value")
+            value=self.default_values[section.lower()][key.lower()]
+            self.add_entry(section,key,value)
+        return value
+    
+    def getint(self,section,key):
+        try:
+            value=self.config.getint(section,key)
+        except:
+            print("Could not read",str(section)+"/"+str(key),"from the config file")
+            print("Using default value")
+            value=self.default_values[section.lower()][key.lower()]
+            self.add_entry(section,key,value)
+            value=self.config.getint(section,key)
+        return value
+    
+    def getfloat(self,section,key):
+        try:
+            value=self.config.getfloat(section,key)
+        except:
+            print("Could not read",str(section)+"/"+str(key),"from the config file")
+            print("Using default value")
+            value=self.default_values[section.lower()][key.lower()]
+            self.add_entry(section,key,value)
+            value=self.config.getfloat(section,key)
+        return value
+    
+    def getboolean(self,section,key):
+        try:
+            value=self.config.getboolean(section,key)
+        except:
+            print("Could not read",str(section)+"/"+str(key),"from the config file")
+            print("Using default value")
+            value=self.default_values[section.lower()][key.lower()]
+            self.add_entry(section,key,value)
+            value=self.config.getboolean(section,key)
+        return value
+    
+    def add_entry(self,section,key,value):
+        #normally section/key/value should all be unicode here
+        #but just to be sure:
+        section=unicode(section)
+        key=unicode(key)
+        value=unicode(value)
+        #then, let's turn every thing in str
+        section=section.encode("utf-8")
+        key=key.encode("utf-8")
+        value=value.encode("utf-8")
+        if not self.config.has_section(section):
+            print("Adding section",section,"in config file")
+            self.config.add_section(section)
+        print("Setting",section,"/",key,"in the config file")
+        self.config.set(section,key,value)
+        #self.config.write(open(self.config_file,"w"))
+
+    def get_sections(self):
+        return [section.decode("utf-8") for section in self.config.sections()]
+
+    def get_options(self,section):
+        return [option.decode("utf-8") for option in self.config.options(section)]
+    
+    def remove_section(self,section):
+        result=self.config.remove_section(section)
+        self.config.write(open(self.config_file,"w"))
+        return result
+autopk_config=MyConfig(config_file)
+
+if __name__ == "__main__":
+    parser = OptionParser(usage="%prog [-h]", description=_description)
+    opts, args = parser.parse_args(sys.argv[1:])
+
+    weightb = autopk_config.get("engines", "blackweight")
+    weightw = autopk_config.get("engines", "whiteweight")
+    pkstopno = autopk_config.getint("howtofight", "pkstopno")
+    pkstartno = autopk_config.getint("howtofight", "pkstartno")
+    spendTime = autopk_config.getint("howtofight", "spendtime")
+    
+    t0 = datetime.datetime.now()
+    blackW = 0
+    whiteW = 0
+    for i in range(pkstartno,pkstopno+1):
+        whoWin = startPK(i,spendTime)
+        if whoWin == 'b':
+            blackW += 1
+        elif whoWin == 'w':
+            whiteW += 1
+        elif whoWin == 'x':
+            print('Too many moves Found:', whoWin)
+        else:
+            print('Error Found:', whoWin)
+        print(weightb+' B vs '+weightw+' W'+str(spendTime)+'s', blackW,':', whiteW)
+
+        #每一局结束保存临时结果到~autopk-ST_temp.txt文件中,防止意外退出
         t1 = datetime.datetime.now()
-        resfile = open('PKResult.txt','a',encoding='utf-8')    #python 3
-        resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+        tempfile = open('~autopk-ST_temp.txt','w',encoding='utf-8')
+        tempfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
                       t1.strftime('%b-%d-%y %H:%M:%S')+ \
                       '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
-        resfile.write(weightb+' B-nextEngine vs '+weightw+' W-1130Engine'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
-        #resfile.write(weightb+' B-t2 vs '+weightw+' W-t4 '+str(blackW)+":"+str(whiteW)+'\n')
-        resfile.close()
-        spendTime = spendTime*2 #可修改：设定每一轮pk时间的增量
-        #引擎及引擎参数的修改要到201行和242行，注意行数可能随着程序被修改而变化，搜索pbscmd、pwscmd变量比较准确
+        tempfile.write(weightb+' B-t1b1 vs '+weightw+' W-t2b8'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+        tempfile.close()
+
+    t1 = datetime.datetime.now()
+    resfile = open('PKResult-ST.txt','a',encoding='utf-8')
+    resfile.write('From:'+t0.strftime('%b-%d-%y %H:%M:%S')+' to '+ \
+                  t1.strftime('%b-%d-%y %H:%M:%S')+ \
+                  '. Spend '+"{:.2f}".format((t1-t0).total_seconds())+'s\n')
+    resfile.write(weightb+' B vs '+weightw+' W'+str(spendTime)+'s '+str(blackW)+":"+str(whiteW)+'\n')
+    resfile.close()
