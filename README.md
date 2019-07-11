@@ -1,7 +1,7 @@
 # Curves
-![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/curves/40b-elo-playoutsCurve-updateTo225.jpg "Screen-shot of 40b-elo-playouts Curves")
+![Screen-shot of 40b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/curves/40b-elo-playoutsCurve-updateTo231.jpg "Screen-shot of 40b-elo-playouts Curves")
 ![Screen-shot of 15b-elo-playouts Curves](https://github.com/guitanj/AutoPK/blob/master/curves/15b-elo-playoutsCurve-update157-990.jpg "Screen-shot of 15b-elo-playouts Curves")
-![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/elo/playoutsVSEloList-update225.jpg "playouts vs elo list")
+![权重playouts值对应elo分对照表-基于各自100局对战测试（设定ELFV0 2po为2000）](https://github.com/guitanj/AutoPK/blob/master/elo/playoutsVSEloList-update231.jpg "playouts vs elo list")
 
 # AutoPK
 Try to draw the elo-playouts curve of those leelazero networks.
